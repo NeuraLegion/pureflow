@@ -129,7 +129,6 @@ async function bootstrap() {
     redirect: false,
     wildcard: false,
     serveDotFiles: false,
-    // Block sensitive dotfiles and VCS metadata if they are ever present in the static root
     preHandler: (req, reply, done) => {
       const url = req.url?.split('?')[0] ?? '';
       if (
