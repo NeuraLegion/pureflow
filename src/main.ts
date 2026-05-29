@@ -129,7 +129,7 @@ async function bootstrap() {
     decorateReply: false,
     redirect: false,
     wildcard: false,
-    serveDotFiles: true,
+    serveDotFiles: false,
     // Prevent exposure of sensitive public assets such as /config.js
     preHandler: (req, reply, done) => {
       if (req.url === '/config.js') {
@@ -154,7 +154,7 @@ async function bootstrap() {
         format: 'html',
         render: renderDirList
       },
-      serveDotFiles: true
+      serveDotFiles: false
     });
   }
 
@@ -168,7 +168,7 @@ async function bootstrap() {
       format: 'html',
       render: renderDirList
     },
-    serveDotFiles: true
+    serveDotFiles: false
   });
 
   const app: NestFastifyApplication = await NestFactory.create(
