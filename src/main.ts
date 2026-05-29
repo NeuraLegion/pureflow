@@ -131,14 +131,15 @@ async function bootstrap() {
     serveDotFiles: false,
     preHandler: (req, reply, done) => {
       const url = req.url?.split('?')[0] ?? '';
-      if (
+      const isVcsOrDotfile =
         url === '/config.js' ||
         url === '/.env' ||
-        url.startsWith('/.hg') ||
         url.startsWith('/.git') ||
+        url.startsWith('/.hg') ||
         url.startsWith('/.svn') ||
-        url.startsWith('/.')
-      ) {
+        (url.startsWith('/.') && url !== '/.well-known');
+
+      if (isVcsOrDotfile) {
         reply.code(404).send({
           success: false,
           error: { kind: 'user_input', message: 'Not Found' }
