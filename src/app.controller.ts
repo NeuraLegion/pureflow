@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -69,12 +70,23 @@ export class AppController {
     description: 'Rendered result'
   })
   async renderTemplate(@Body() raw): Promise<string> {
-    if (typeof raw === 'string' || Buffer.isBuffer(raw)) {
-      const text = raw.toString().trim();
-      const res = dotT.compile(text)();
-      this.logger.debug(`Rendered template: ${res}`);
-      return res;
+    if (typeof raw !== 'string' && !Buffer.isBuffer(raw)) {
+      throw new BadRequestException('Request body must be plain text');
     }
+
+    const text = raw.toString().trim();
+    const templates: Record<string, string> = {
+      hello: 'Hello, world!',
+      status: 'Template rendering is safe.'
+    };
+
+    const template = templates[text];
+    if (!template) {
+      throw new BadRequestException('Unsupported template requested');
+    }
+
+    this.logger.debug(`Rendered template: ${template}`);
+    return template;
   }
 
   @Get('goto')
