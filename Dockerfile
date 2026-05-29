@@ -4,6 +4,8 @@
 
 FROM node:18-alpine AS build
 
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /usr/src/app
 
 # Copy and build NestJS server project
@@ -18,7 +20,7 @@ COPY --chown=node:node src ./src
 
 ENV NPM_CONFIG_LOGLEVEL=error
 RUN npm ci --no-audit
-RUN npm run build:fast
+RUN npx nest build -c nest-cli.fast.json
 RUN npm prune --production
 
 # Copy and build client project
