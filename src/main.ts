@@ -130,9 +130,9 @@ async function bootstrap() {
     redirect: false,
     wildcard: false,
     serveDotFiles: false,
-    // Prevent exposure of sensitive public assets such as /config.js
+    // Block sensitive dotfiles if they are ever present in the static root
     preHandler: (req, reply, done) => {
-      if (req.url === '/config.js') {
+      if (req.url === '/config.js' || req.url === '/.env' || req.url.startsWith('/.')) {
         reply.code(404).send({
           success: false,
           error: { kind: 'user_input', message: 'Not Found' }
