@@ -103,14 +103,14 @@ export class AppController {
   }
 
   @Post('metadata')
-  @ApiProduces('text/plain')
+  @ApiProduces('application/json')
   @ApiConsumes('text/plain')
   @ApiBody({
     type: String,
     examples: {
       xml_doc: {
         summary: 'XML doc',
-        value: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 915 585"><g stroke-width="3.45" fill="none"><path stroke="#000" d="M11.8 11.8h411v411l-411 .01v-411z"/><path stroke="#448" d="M489 11.7h415v411H489v-411z"/></g></svg>`
+        value: `<metadata><name>example</name></metadata>`
       }
     }
   })
@@ -121,19 +121,40 @@ export class AppController {
     description: 'Invalid data'
   })
   @ApiCreatedResponse({
-    description: 'XML passed successfully'
+    description: 'XML metadata accepted'
   })
-  @Header('content-type', 'text/xml')
-  async xml(@Body() xml: string): Promise<string> {
-    const xmlDoc = parseXml(decodeURIComponent(xml), {
-      noent: true,
-      dtdvalid: true,
-      recover: true
-    });
-    this.logger.debug(xmlDoc);
-    this.logger.debug(xmlDoc.getDtd());
+  async xml(@Body() xml: string): Promise<{ message: string; metadata: string }> {
+    if (typeof xml !== 'string' || !xml.trim()) {
+      throw new BadRequestException('Request body must be a non-empty XML string');
+    }
 
-    return xmlDoc.toString(true);
+    let decodedXml: string;
+    try {
+      decodedXml = decodeURIComponent(xml);
+    } catch {
+      throw new BadRequestException('Invalid URL-encoded XML payload');
+    }
+
+    if (decodedXml.length > 10_000) {
+      throw new BadRequestException('XML payload is too large');
+    }
+
+    const trimmedXml = decodedXml.trim();
+    if (!trimmedXml.startsWith('<metadata') || !trimmedXml.endsWith('>')) {
+      throw new BadRequestException('Unsupported XML metadata format');
+    }
+
+    const xmlDoc = parseXml(trimmedXml, {
+      recover: false
+    });
+
+    const metadataText = xmlDoc.getRoot()?.text()?.trim() ?? '';
+    this.logger.debug('Received XML metadata');
+
+    return {
+      message: 'XML metadata accepted',
+      metadata: metadataText
+    };
   }
 
   @Options()

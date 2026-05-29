@@ -2,7 +2,7 @@ export const API_DESC_RENDER_REQUEST = `Template for rendering by doT. Expects p
 
 export const API_DESC_REDIRECT_REQUEST = `Redirects the user to the provided url`;
 
-export const API_DESC_XML_METADATA = `Receives client's metadata in XML format. Returns the passed XML`;
+export const API_DESC_XML_METADATA = `Receives client's metadata in XML format. Returns a safe acknowledgement response`;
 
 export const API_DESC_OPTIONS_REQUEST = `Returns the list of supported operations`;
 
