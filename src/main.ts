@@ -144,20 +144,7 @@ async function bootstrap() {
     }
   });
 
-  for (const dir of readdirSync(join(__dirname, '..', 'client', 'vcs'))) {
-    await server.register(fastifyStatic, {
-      root: join(__dirname, '..', 'client', 'vcs', dir),
-      prefix: `/.${dir}`,
-      decorateReply: false,
-      redirect: true,
-      index: false,
-      list: {
-        format: 'html',
-        render: renderDirList
-      },
-      serveDotFiles: false
-    });
-  }
+  // Do not expose source-control metadata or working copies over HTTP.
 
   await server.register(fastifyStatic, {
     root: join(__dirname, '..', 'client', 'dist', 'vendor'),
