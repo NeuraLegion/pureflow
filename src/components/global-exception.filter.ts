@@ -20,10 +20,9 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
       return super.catch(exception, host);
     }
 
-    const unprocessableException = new InternalServerErrorException(
-      { error: 'An internal error has occurred.' },
-      'An internal error has occurred, and the API was unable to service your request.'
-    );
+    const unprocessableException = new InternalServerErrorException({
+      error: 'An internal error has occurred.'
+    });
 
     if (gql) {
       throw unprocessableException;
