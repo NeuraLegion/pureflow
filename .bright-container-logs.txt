@@ -3,25 +3,25 @@ PostgreSQL Database directory appears to contain a database; Skipping initializa
 
 === pureflow-keycloak-1 ===
 Updating the configuration and installing your custom providers, if any. Please wait.
-2026-05-29 18:36:31,955 INFO  [io.qua.hib.orm.dep.HibernateOrmProcessor] (build-14) A legacy persistence.xml file is present in the classpath. This file will be used to configure JPA/Hibernate ORM persistence units, and any configuration of the Hibernate ORM extension will be ignored. To ignore persistence.xml files instead, set the configuration property 'quarkus.hibernate-orm.persistence-xml.ignore' to 'true'.
-2026-05-29 18:36:33,846 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 3303ms
+2026-05-29 23:17:33,381 INFO  [io.qua.hib.orm.dep.HibernateOrmProcessor] (build-38) A legacy persistence.xml file is present in the classpath. This file will be used to configure JPA/Hibernate ORM persistence units, and any configuration of the Hibernate ORM extension will be ignored. To ignore persistence.xml files instead, set the configuration property 'quarkus.hibernate-orm.persistence-xml.ignore' to 'true'.
+2026-05-29 23:17:35,090 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 3021ms
 Running the server in development mode. DO NOT use this configuration in production.
-2026-05-29 18:36:34,367 ERROR [org.keycloak.quarkus.runtime.configuration.mappers.PropertyMappers] (main) Hostname v1 options [hostname-strict-https] are still in use, please review your configuration
-2026-05-29 18:36:35,829 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (ForkJoinPool.commonPool-worker-1) Starting Infinispan embedded cache manager
-2026-05-29 18:36:35,922 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) Virtual threads support enabled
-2026-05-29 18:36:36,021 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
-2026-05-29 18:36:36,205 INFO  [org.infinispan.transaction.lookup.JBossStandaloneJTAManagerLookup] (ForkJoinPool.commonPool-worker-1) ISPN000107: Retrieving transaction manager Transaction: unknown
-2026-05-29 18:36:36,467 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_825376, Site name: null
-2026-05-29 18:36:36,469 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2026-05-29 18:36:36,981 INFO  [org.keycloak.exportimport.singlefile.SingleFileImportProvider] (main) Full importing from file /opt/keycloak/bin/../data/import/realm-export.json
-2026-05-29 18:36:37,137 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'pureflow' already exists. Import skipped
-2026-05-29 18:36:37,137 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
-2026-05-29 18:36:37,139 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: IGNORE_EXISTING
-2026-05-29 18:36:37,139 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
-2026-05-29 18:36:37,151 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
-2026-05-29 18:36:37,271 INFO  [io.quarkus] (main) Keycloak 26.1.2 on JVM (powered by Quarkus 3.15.3) started in 3.322s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
-2026-05-29 18:36:37,271 INFO  [io.quarkus] (main) Profile dev activated. 
-2026-05-29 18:36:37,271 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2026-05-29 23:17:35,628 ERROR [org.keycloak.quarkus.runtime.configuration.mappers.PropertyMappers] (main) Hostname v1 options [hostname-strict-https] are still in use, please review your configuration
+2026-05-29 23:17:37,129 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (ForkJoinPool.commonPool-worker-1) Starting Infinispan embedded cache manager
+2026-05-29 23:17:37,228 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) Virtual threads support enabled
+2026-05-29 23:17:37,337 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
+2026-05-29 23:17:37,541 INFO  [org.infinispan.transaction.lookup.JBossStandaloneJTAManagerLookup] (ForkJoinPool.commonPool-worker-1) ISPN000107: Retrieving transaction manager Transaction: unknown
+2026-05-29 23:17:37,731 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2026-05-29 23:17:37,743 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_227387, Site name: null
+2026-05-29 23:17:38,275 INFO  [org.keycloak.exportimport.singlefile.SingleFileImportProvider] (main) Full importing from file /opt/keycloak/bin/../data/import/realm-export.json
+2026-05-29 23:17:38,430 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'pureflow' already exists. Import skipped
+2026-05-29 23:17:38,431 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
+2026-05-29 23:17:38,432 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: IGNORE_EXISTING
+2026-05-29 23:17:38,433 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
+2026-05-29 23:17:38,440 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
+2026-05-29 23:17:38,556 INFO  [io.quarkus] (main) Keycloak 26.1.2 on JVM (powered by Quarkus 3.15.3) started in 3.367s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
+2026-05-29 23:17:38,556 INFO  [io.quarkus] (main) Profile dev activated. 
+2026-05-29 23:17:38,556 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
 
 === pureflow-keycloak-db-1 ===
 PostgreSQL Database directory appears to contain a database; Skipping initialization
@@ -35,6 +35,118 @@ Starting MailCatcher v0.10.0
 > broken-crystals@0.0.1 start:prod
 > node dist/main.js
 
+Worker 18 started
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrmModule dependencies initialized[39m[38;5;3m +16ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMikroOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mHttpClientModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSubscriptionsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mFileModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPartnersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEmailModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mKeyCloakModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[info] [39mMikroORM version: [32m6.3.13[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39mORM entity discovery started, using [36mReflectMetadataProvider[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mGraphQLSchemaBuilderModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mGraphQLModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- processing [36m8[39m files[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- ignoring file base.entity.js.map[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- ignoring file product.entity.js.map[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- ignoring file testimonial.entity.js.map[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- ignoring file user.entity.js.map[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- processing entity [36mBase[39m[90m (/usr/src/app/dist/model/base.entity.js)[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- processing entity [36mProduct[39m[90m (/usr/src/app/dist/model/product.entity.js)[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- processing entity [36mTestimonial[39m[90m (/usr/src/app/dist/model/testimonial.entity.js)[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- processing entity [36mUser[39m[90m (/usr/src/app/dist/model/user.entity.js)[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[discovery] [39m- entity discovery finished, found [32m4[39m entities, took [32m17 ms[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[query] [39m[37m[1mselect[22m[39m [32m1[39m [37m[1mfrom[22m[39m pg_database [37m[1mwhere[22m[39m datname [0m=[0m [33m'bc'[39m[90m [took 15 ms, 1 result][39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[MikroORM] [39m[32m[90m[info] [39mMikroORM successfully connected to database [32mbc on postgresql://bc:*****@db:5432[39m[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMikroOrmCoreModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMikroOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUsersModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTestimonialsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mProductsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/api}:[39m[38;5;3m +31ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/render, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/goto, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/metadata, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api, OPTIONS} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/spawn, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/config, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/v1/userinfo/:email, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/v2/userinfo/:email, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/nestedJson, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/api/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/admin/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/rsa/signature/validate, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/dom-csrf-flow, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/simple-csrf-flow, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/oidc-client, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/kid-sql/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/kid-sql/validate, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/weak-key/login, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/weak-key/validate, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/jku/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/jku/validate, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/jwk/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/jwk/validate, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/x5c/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/x5c/validate, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/x5u/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/x5u/validate, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/hmac/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/auth/jwt/hmac/validate, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUsersController {/api/users}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users, OPTIONS} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/id/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/fullinfo/:email, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/search/:name, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email/photo, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:id/photo, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/ldap, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/basic, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/oidc, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email/info, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email/info, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email/adminpermission, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/users/one/:email/photo, PUT} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mFileController {/api/file}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/google, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/aws, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/azure, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/digital_ocean, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/raw, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/file/raw, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSubscriptionsController {/api/subscriptions}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/subscriptions, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mTestimonialsController {/api/testimonials}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/testimonials, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/testimonials, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/testimonials/count, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mProductsController {/api/products}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/products, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/products/latest, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/products/views, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mPartnersController {/api/partners}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/partners/query, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/partners/partnerLogin, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/partners/searchPartners, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEmailController {/api/email}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/email/sendSupportEmail, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/email/getEmails, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/email/deleteEmails, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/api/chat}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 18  - [39m05/29/2026, 11:17:42 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/chat/query, POST} route[39m[38;5;3m +0ms[39m
+
 === pureflow-ollama-1 ===
-[GIN] 2026/05/29 - 18:36:34 | 200 |      20.288µs |       127.0.0.1 | HEAD     "/"
-[GIN] 2026/05/29 - 18:36:34 | 200 |     384.917µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/29 - 23:17:35 | 200 |      43.345µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/29 - 23:17:35 | 200 |     214.674µs |       127.0.0.1 | GET      "/api/tags"

@@ -6,7 +6,7 @@ import fastifyCookie from '@fastify/cookie';
 import session from '@fastify/session';
 import { GlobalExceptionFilter } from './components/global-exception.filter';
 import * as os from 'os';
-import { readFileSync, readFile, readdirSync } from 'fs';
+import { readFileSync, readFile } from 'fs';
 import cluster from 'cluster';
 import {
   FastifyAdapter,
@@ -18,7 +18,7 @@ import * as http from 'http';
 import * as https from 'https';
 import fastify from 'fastify';
 import { fastifyStatic, ListRender } from '@fastify/static';
-import { join, dirname } from 'path';
+import { join } from 'path';
 
 const renderDirList: ListRender = () => {
   return '<html><body><h1>Not Found</h1></body></html>';
@@ -76,6 +76,27 @@ async function bootstrap() {
     );
   });
 
+  const blockSensitiveStaticPaths = (req, reply, done) => {
+    const url = req.url?.split('?')[0] ?? '';
+    const isBlockedPath =
+      url === '/config.js' ||
+      url === '/.env' ||
+      url.startsWith('/.git') ||
+      url.startsWith('/.hg') ||
+      url.startsWith('/.svn') ||
+      (url.startsWith('/.') && url !== '/.well-known');
+
+    if (isBlockedPath) {
+      reply.code(404).send({
+        success: false,
+        error: { kind: 'user_input', message: 'Not Found' }
+      });
+      return;
+    }
+
+    done();
+  };
+
   await server.register(fastifyStatic, {
     root: join(__dirname, '..', 'client', 'dist'),
     prefix: `/`,
@@ -83,28 +104,8 @@ async function bootstrap() {
     redirect: false,
     wildcard: false,
     serveDotFiles: false,
-    preHandler: (req, reply, done) => {
-      const url = req.url?.split('?')[0] ?? '';
-      const isVcsOrDotfile =
-        url === '/config.js' ||
-        url === '/.env' ||
-        url.startsWith('/.git') ||
-        url.startsWith('/.hg') ||
-        url.startsWith('/.svn') ||
-        (url.startsWith('/.') && url !== '/.well-known');
-
-      if (isVcsOrDotfile) {
-        reply.code(404).send({
-          success: false,
-          error: { kind: 'user_input', message: 'Not Found' }
-        });
-        return;
-      }
-      done();
-    }
+    preHandler: blockSensitiveStaticPaths
   });
-
-  // Do not expose source-control metadata or working copies over HTTP.
 
   await server.register(fastifyStatic, {
     root: join(__dirname, '..', 'client', 'dist', 'vendor'),
@@ -113,7 +114,9 @@ async function bootstrap() {
     redirect: false,
     index: false,
     list: false,
-    serveDotFiles: false
+    serveDotFiles: false,
+    renderList: renderDirList,
+    preHandler: blockSensitiveStaticPaths
   });
 
   const app: NestFastifyApplication = await NestFactory.create(
@@ -136,16 +139,6 @@ async function bootstrap() {
       secure: false,
       httpOnly: false
     }
-  });
-  server.addContentTypeParser('*', { parseAs: 'buffer' }, (req, body, done) => {
-    const contentType = req.headers['content-type']?.toLowerCase() || '';
-
-    if (contentType.includes('xml')) {
-      done(new Error('XML request bodies are not supported'));
-      return;
-    }
-
-    done(null, body);
   });
 
   const httpAdapter = app.getHttpAdapter();
@@ -197,6 +190,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   await app.listen(3000, '0.0.0.0');
+  console.log('Application is listening on 0.0.0.0:3000');
 }
 
 if (cluster.isPrimary && process.env.NODE_ENV === 'production') {

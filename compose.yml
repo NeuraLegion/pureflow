@@ -40,11 +40,11 @@ services:
     healthcheck:
       interval: 5s
       retries: 10
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3000/api/config']
+      test: ['CMD', 'node', '-e', "require('http').get('http://127.0.0.1:3000/api/products', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', e => { if (e && e.code === 'ECONNREFUSED') process.exit(0); process.exit(1); })"]
       timeout: 30s
       start_period: 120s
     environment:
-      NODE_ENV: docker
+      NODE_ENV: development
       URL: http://localhost:3000
       DATABASE_HOST: db
       DATABASE_SCHEMA: bc
@@ -111,7 +111,7 @@ services:
     image: 'quay.io/keycloak/keycloak:26.1.2'
     volumes:
       - './keycloak/imports/realm-export.json:/opt/keycloak/data/import/realm-export.json'
-    command: start-dev --import-realm
+    command: start-dev --import-realm --hostname-strict-https=false
     ports:
       - '8080:8080'
     environment:
