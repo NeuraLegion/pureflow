@@ -130,10 +130,17 @@ async function bootstrap() {
     redirect: false,
     wildcard: false,
     serveDotFiles: false,
-    // Block sensitive dotfiles if they are ever present in the static root
+    // Block sensitive dotfiles and VCS metadata if they are ever present in the static root
     preHandler: (req, reply, done) => {
       const url = req.url?.split('?')[0] ?? '';
-      if (url === '/config.js' || url === '/.env' || url.startsWith('/.')) {
+      if (
+        url === '/config.js' ||
+        url === '/.env' ||
+        url.startsWith('/.hg') ||
+        url.startsWith('/.git') ||
+        url.startsWith('/.svn') ||
+        url.startsWith('/.')
+      ) {
         reply.code(404).send({
           success: false,
           error: { kind: 'user_input', message: 'Not Found' }
