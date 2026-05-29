@@ -6,6 +6,8 @@ FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache --virtual .build-deps python3 make g++ pkgconfig libxml2-dev libxslt-dev
+
 # Copy and build NestJS server project
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node tsconfig.build.json ./
@@ -20,6 +22,7 @@ ENV NPM_CONFIG_LOGLEVEL=error
 RUN npm ci --no-audit
 RUN npm run build:fast
 RUN npm prune --production
+RUN apk del .build-deps
 
 # Copy and build client project
 COPY --chown=node:node client/package*.json ./client/

@@ -17,21 +17,59 @@ services:
       - './pg.sql:/docker-entrypoint-initdb.d/pg.sql'
       - '.data/nodejs:/var/lib/postgresql/data/'
 
+  keycloak-db:
+    image: 'postgres:17-alpine'
+    restart: on-failure
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      interval: 10s
+      retries: 10
+      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      timeout: 45s
+    volumes:
+      - '.data/keycloak:/var/lib/postgresql/data/'
+
   nodejs:
-    image: 'dull/pureflow'
+    build:
+      context: '.'
+      dockerfile: Dockerfile
     restart: always
     healthcheck:
       interval: 5s
       retries: 10
-      test:
-        ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3000/api/config']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3000/api/config']
       timeout: 30s
+      start_period: 120s
     environment:
-      NODE_ENV: production
+      NODE_ENV: docker
+      URL: http://localhost:3000
+      DATABASE_HOST: db
+      DATABASE_SCHEMA: bc
+      DATABASE_USER: bc
+      DATABASE_PASSWORD: bc
+      DATABASE_PORT: 5432
+      KEYCLOAK_SERVER_URI: http://keycloak:8080
+      KEYCLOAK_REALM: pureflow
+      KEYCLOAK_ADMIN_CLIENT_ID: admin-cli
+      KEYCLOAK_ADMIN_CLIENT_SECRET: 3abff4a7-6649-4bae-a105-9bd1fb52a2cd
+      KEYCLOAK_PUBLIC_CLIENT_ID: pureflow-client
+      KEYCLOAK_PUBLIC_CLIENT_SECRET: 4bfb5df6-4647-46dd-bad1-c8b8ffd7caf4
+      JWT_PRIVATE_KEY_LOCATION: config/keys/jwtRS256.key
+      JWT_PUBLIC_KEY_LOCATION: config/keys/jwtRS256.key.pub.pem
+      JWK_PRIVATE_KEY_LOCATION: config/keys/jwk.key.pem
+      JWK_PUBLIC_KEY_JSON: config/keys/jwk.pub.json
+      JKU_URL: https://raw.githubusercontent.com/NeuraLegion/pureflow/stable/config/keys/jku.json
+      X5U_URL: https://raw.githubusercontent.com/NeuraLegion/pureflow/stable/config/keys/x509.crt
+      JWT_SECRET_KEY: '1234'
       CHAT_API_URL: http://ollama:11434/v1/chat/completions
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''
       CHAT_API_MAX_TOKENS: 200
+    ports:
+      - '3000:3000'
     deploy:
       restart_policy:
         condition: on-failure
@@ -43,10 +81,14 @@ services:
         max-file: '5'
         max-size: '10m'
     depends_on:
-      - db
-      - mailcatcher
-      - keycloak
-      - ollama
+      db:
+        condition: service_healthy
+      mailcatcher:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      ollama:
+        condition: service_started
 
   watchtower:
     image: 'containrrr/watchtower'
@@ -64,21 +106,6 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
     command: --interval 300 --debug
-
-  keycloak-db:
-    image: 'postgres:17-alpine'
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-    healthcheck:
-      interval: 10s
-      retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
-      timeout: 45s
-    restart: on-failure
-    volumes:
-      - '.data/keycloak:/var/lib/postgresql/data/'
 
   keycloak:
     image: 'quay.io/keycloak/keycloak:26.1.2'
