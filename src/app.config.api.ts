@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AppConfig {
-  @ApiProperty()
-  awsBucket: string;
-
-  @ApiProperty()
-  sql: string;
-
-  @ApiProperty()
+  @ApiProperty({ description: 'Public Google Maps configuration value' })
   googlemaps: string;
 }
