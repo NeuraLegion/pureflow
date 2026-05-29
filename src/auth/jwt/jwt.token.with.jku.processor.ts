@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import * as jose from 'jose';
 import { HttpClientService } from '../../httpclient/httpclient.service';
 import { JwtTokenProcessor as JwtTokenProcessor } from './jwt.token.processor';
@@ -17,7 +17,12 @@ export class JwtTokenWithJKUProcessor extends JwtTokenProcessor {
     const [header, payload] = this.parse(token);
 
     const url = header.jku;
-    this.log.debug(`Calling jwk url: ${url}`);
+    if (!url || url !== this.jkuUrl) {
+      this.log.warn('Rejected JWT with unapproved JKU value');
+      throw new UnauthorizedException('Could not validate');
+    }
+
+    this.log.debug('Calling configured JWK URL');
     const jwkRes: jose.JWK = await this.httpClient.loadJSON(url);
     const keyLike = await jose.importJWK(jwkRes);
     const verifyRes = await jose.jwtVerify(token, keyLike);

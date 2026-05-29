@@ -1,16 +1,30 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import axios, { AxiosRequestConfig } from 'axios';
 
 @Injectable()
 export class HttpClientService {
   private readonly log: Logger = new Logger(HttpClientService.name);
 
+  private validateUrl(url: string): void {
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      throw new BadRequestException('Invalid URL');
+    }
+
+    if (parsed.protocol !== 'https:') {
+      throw new BadRequestException('Invalid URL');
+    }
+  }
+
   async loadJSON<T = unknown>(url: string): Promise<T> {
+    this.validateUrl(url);
     const resp = await axios.get<T>(url, {
       responseType: 'json'
     });
     if (resp.status != 200) {
-      throw new Error(`Failed to load url: ${url}. Status ${resp.status}`);
+      throw new Error('Failed to load remote JSON');
     }
     this.log.debug(
       `Loaded: ${
