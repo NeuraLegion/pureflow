@@ -185,9 +185,11 @@ export class AppController {
     try {
       return await this.appService.launchCommand(command);
     } catch (err) {
+      this.logger.error(
+        `spawn command failed: ${err instanceof Error ? err.message : String(err)}`
+      );
       throw new InternalServerErrorException({
-        error: err.message || err,
-        location: __filename
+        error: 'An internal error has occurred.'
       });
     }
   }

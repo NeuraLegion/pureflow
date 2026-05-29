@@ -34,13 +34,21 @@ export class AppService {
           res(data.toString('ascii'));
         });
 
-        ps.on('error', (err) => rej(err.message));
+        ps.on('error', (err) => {
+          this.logger.error(
+            `child process spawn error: ${err instanceof Error ? err.message : String(err)}`
+          );
+          rej(new Error('An internal error has occurred.'));
+        });
 
         ps.on('close', (code) =>
           this.logger.debug(`child process exited with code ${code}`)
         );
       } catch (err) {
-        rej(err.message);
+        this.logger.error(
+          `launchCommand failed: ${err instanceof Error ? err.message : String(err)}`
+        );
+        rej(new Error('An internal error has occurred.'));
       }
     });
   }
