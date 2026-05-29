@@ -53,11 +53,9 @@ export class AppService {
     });
   }
 
-  getConfig(): AppConfig {
+  getConfig(): { message: string } {
     return {
-      googlemaps: this.configService.get<string>(
-        AppModuleConfigProperties.ENV_GOOGLE_MAPS
-      )
+      message: 'Configuration endpoint no longer exposes secret values'
     };
   }
 

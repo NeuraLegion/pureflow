@@ -200,9 +200,9 @@ export class AppController {
     description: API_DESC_CONFIG_SERVER
   })
   @ApiOkResponse({
-    type: AppConfig
+    description: 'Returns non-sensitive application configuration only'
   })
-  getConfig(): AppConfig {
+  getConfig(): { message: string } {
     return this.appService.getConfig();
   }
 
