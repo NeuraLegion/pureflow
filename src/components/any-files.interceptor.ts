@@ -20,8 +20,7 @@ export class AnyFilesInterceptor implements NestInterceptor {
     if (!req.isMultipart()) {
       res.send(
         new BadRequestException({
-          error: 'Request is not multipart',
-          location: __filename
+          error: 'Request is not multipart'
         })
       );
       return;
