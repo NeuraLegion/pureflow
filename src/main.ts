@@ -19,7 +19,6 @@ import * as https from 'https';
 import fastify from 'fastify';
 import { fastifyStatic, ListRender } from '@fastify/static';
 import { join, dirname } from 'path';
-import rawbody from 'raw-body';
 
 const renderDirList: ListRender = (dirs, files) => {
   const currDir = dirname((dirs[0] || files[0]).href);
@@ -187,7 +186,16 @@ async function bootstrap() {
       httpOnly: false
     }
   });
-  server.addContentTypeParser('*', (req) => rawbody(req.raw));
+  server.addContentTypeParser('*', { parseAs: 'buffer' }, (req, body, done) => {
+    const contentType = req.headers['content-type']?.toLowerCase() || '';
+
+    if (contentType.includes('xml')) {
+      done(new Error('XML request bodies are not supported'));
+      return;
+    }
+
+    done(null, body);
+  });
 
   const httpAdapter = app.getHttpAdapter();
 
