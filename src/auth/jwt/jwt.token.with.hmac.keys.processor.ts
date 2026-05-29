@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtTokenProcessor as JwtTokenProcessor } from './jwt.token.processor';
 import { encode, decode } from 'jwt-simple';
 
@@ -12,10 +12,14 @@ export class JwtTokenWithHMACKeysProcessor extends JwtTokenProcessor {
 
     const [header] = this.parse(token);
     if (header.alg !== 'HS256') {
-      throw new Error('Invalid JWT algorithm');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    return decode(token, this.privateKey, false, 'HS256');
+    try {
+      return decode(token, this.privateKey, false, 'HS256');
+    } catch {
+      throw new UnauthorizedException('Invalid credentials');
+    }
   }
 
   async createToken(payload: unknown): Promise<string> {

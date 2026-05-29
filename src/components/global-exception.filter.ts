@@ -24,6 +24,8 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
       error: 'An internal error has occurred.'
     });
 
+    console.error(exception);
+
     if (gql) {
       throw unprocessableException;
     }
