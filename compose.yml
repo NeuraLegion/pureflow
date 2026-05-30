@@ -1,11 +1,11 @@
 services:
   db:
     image: 'postgres:17-alpine'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d bc -U bc']
       timeout: 45s
     environment:
       POSTGRES_DB: bc
@@ -19,10 +19,11 @@ services:
 
   nodejs:
     image: 'dull/pureflow'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 5s
       retries: 10
+      start_period: 120s
       test:
         ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3000/api/config']
       timeout: 30s
@@ -74,7 +75,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d keycloak -U keycloak']
       timeout: 45s
     restart: on-failure
     volumes:
