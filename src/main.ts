@@ -24,6 +24,14 @@ const renderDirList: ListRender = () => {
   return '<html><body><h1>Not Found</h1></body></html>';
 };
 
+const toSafeErrorMessage = (err: unknown): string => {
+  if (err instanceof Error) {
+    return err.message;
+  }
+
+  return typeof err === 'string' ? err : 'Unknown error';
+};
+
 async function bootstrap() {
   http.globalAgent.maxSockets = Infinity;
   https.globalAgent.maxSockets = Infinity;
@@ -200,11 +208,15 @@ async function bootstrap() {
 }
 
 process.on('unhandledRejection', (err) => {
-  console.error('Unhandled rejection during startup/runtime:', err);
+  console.error(
+    `Unhandled rejection during startup/runtime: ${toSafeErrorMessage(err)}`
+  );
 });
 
 process.on('uncaughtException', (err) => {
-  console.error('Uncaught exception during startup/runtime:', err);
+  console.error(
+    `Uncaught exception during startup/runtime: ${toSafeErrorMessage(err)}`
+  );
 });
 
 if (
@@ -228,7 +240,7 @@ if (
   });
 } else {
   bootstrap().catch((err) => {
-    console.error('Bootstrap failed:', err);
+    console.error(`Bootstrap failed: ${toSafeErrorMessage(err)}`);
     process.exit(1);
   });
   console.log(`Worker ${process.pid} started`);
