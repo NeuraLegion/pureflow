@@ -1,11 +1,11 @@
 services:
   db:
     image: 'postgres:17-alpine'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}']
       timeout: 45s
     environment:
       POSTGRES_DB: bc
@@ -27,7 +27,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}']
       timeout: 45s
     volumes:
       - '.data/keycloak:/var/lib/postgresql/data/'
@@ -36,16 +36,11 @@ services:
     build:
       context: '.'
       dockerfile: Dockerfile
-    restart: always
-    healthcheck:
-      interval: 5s
-      retries: 10
-      test: ['CMD', 'node', '-e', "require('http').get('http://127.0.0.1:3000/api/products', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', e => { if (e && e.code === 'ECONNREFUSED') process.exit(0); process.exit(1); })"]
-      timeout: 30s
-      start_period: 120s
+    restart: on-failure
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       URL: http://localhost:3000
+      PORT: 3000
       DATABASE_HOST: db
       DATABASE_SCHEMA: bc
       DATABASE_USER: bc
@@ -68,6 +63,8 @@ services:
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''
       CHAT_API_MAX_TOKENS: 200
+      ENABLE_HTTPS: 'false'
+      ENABLE_CLUSTER: 'false'
     ports:
       - '3000:3000'
     deploy:
@@ -90,22 +87,6 @@ services:
       ollama:
         condition: service_started
 
-  watchtower:
-    image: 'containrrr/watchtower'
-    healthcheck:
-      test: ['CMD', '/watchtower', '--health-check']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-    restart: always
-    logging:
-      options:
-        max-file: '5'
-        max-size: '10m'
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    command: --interval 300 --debug
 
   keycloak:
     image: 'quay.io/keycloak/keycloak:26.1.2'
@@ -162,8 +143,8 @@ services:
       test: ['CMD', 'ollama', 'list']
       timeout: 10s
       start_period: 60s
-    ports:
-      - '11434:11434'
+    expose:
+      - '11434'
     deploy:
       restart_policy:
         condition: on-failure

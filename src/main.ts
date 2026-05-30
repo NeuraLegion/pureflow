@@ -36,14 +36,15 @@ async function bootstrap() {
     trustProxy: true,
     onProtoPoisoning: 'ignore',
     https:
-      process.env.NODE_ENV === 'production'
+      process.env.NODE_ENV === 'production' &&
+      process.env.ENABLE_HTTPS === 'true'
         ? {
             cert: readFileSync(
               '/etc/letsencrypt/live/pureflow.com/fullchain.pem'
             ),
             key: readFileSync('/etc/letsencrypt/live/pureflow.com/privkey.pem')
           }
-        : null
+        : undefined
   });
 
   server.setDefaultRoute((req, res) => {
@@ -189,11 +190,27 @@ async function bootstrap() {
 
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(3000, '0.0.0.0');
-  console.log('Application is listening on 0.0.0.0:3000');
+  await app.init();
+  await server.listen({
+    port: Number(process.env.PORT || 3000),
+    host: '0.0.0.0'
+  });
+  console.log(`Application is listening on 0.0.0.0:${process.env.PORT || 3000}`);
 }
 
-if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection during startup/runtime:', err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception during startup/runtime:', err);
+});
+
+if (
+  cluster.isPrimary &&
+  process.env.NODE_ENV === 'production' &&
+  process.env.ENABLE_CLUSTER === 'true'
+) {
   console.log(`Primary ${process.pid} is running`);
 
   const numCPUs = os.cpus().length;
@@ -209,6 +226,9 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
     cluster.fork();
   });
 } else {
-  bootstrap();
+  bootstrap().catch((err) => {
+    console.error('Bootstrap failed:', err);
+    process.exit(1);
+  });
   console.log(`Worker ${process.pid} started`);
 }

@@ -13,7 +13,7 @@ export class HttpClientService {
       throw new BadRequestException('Invalid URL');
     }
 
-    if (parsed.protocol !== 'https:') {
+    if (!['https:', 'http:'].includes(parsed.protocol)) {
       throw new BadRequestException('Invalid URL');
     }
   }
