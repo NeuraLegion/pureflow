@@ -81,6 +81,7 @@ async function bootstrap() {
     const url = req.url?.split('?')[0] ?? '';
     const isBlockedPath =
       url === '/config.js' ||
+      url === '/nginx.conf' ||
       url === '/.env' ||
       url.startsWith('/.git') ||
       url.startsWith('/.hg') ||
