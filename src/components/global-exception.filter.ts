@@ -63,9 +63,15 @@ export class GlobalExceptionFilter
 
   public catch(exception: unknown, host: ArgumentsHost) {
     const gql = host.getType<GqlContextType>() === 'graphql';
+    const request = host.switchToHttp().getRequest<{ url?: string }>();
+    const requestPath =
+      typeof request?.url === 'string' ? request.url.split('?')[0] : '';
+    const isJwtValidationRequest = requestPath.startsWith('/api/auth/jwt/');
 
     if (exception instanceof HttpException) {
-      const sanitizedException = this.sanitizeHttpException(exception);
+      const sanitizedException = isJwtValidationRequest
+        ? new UnauthorizedException({ error: 'Unauthorized' })
+        : this.sanitizeHttpException(exception);
 
       this.logger.warn(
         `HTTP exception intercepted with status ${exception.getStatus()}`
@@ -80,8 +86,9 @@ export class GlobalExceptionFilter
 
       if (response && typeof response.status === 'function') {
         const status = sanitizedException.getStatus();
-        const message =
-          status === 400
+        const message = isJwtValidationRequest
+          ? 'Unauthorized'
+          : status === 400
             ? 'Bad Request'
             : status === 401
               ? 'Unauthorized'

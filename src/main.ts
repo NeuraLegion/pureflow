@@ -48,7 +48,11 @@ const toSafeErrorMessage = (err: unknown): string => {
   return 'Internal Server Error';
 };
 
-const toSafeClientMessage = (error: unknown, statusCode: number): string => {
+const toSafeClientMessage = (_error: unknown, statusCode: number): string => {
+  if (statusCode === 400) {
+    return 'Bad Request';
+  }
+
   if (statusCode === 401) {
     return 'Unauthorized';
   }
@@ -59,19 +63,6 @@ const toSafeClientMessage = (error: unknown, statusCode: number): string => {
 
   if (statusCode === 404) {
     return 'Not Found';
-  }
-
-  if (statusCode === 400) {
-    return 'Bad Request';
-  }
-
-  const code =
-    typeof (error as { code?: unknown })?.code === 'string'
-      ? (error as { code: string }).code
-      : undefined;
-
-  if (code && ['ENOENT', 'EACCES', 'EPERM', 'ENOTDIR'].includes(code)) {
-    return 'Internal Server Error';
   }
 
   return statusCode >= 500 ? 'Internal Server Error' : 'Request failed';
@@ -115,11 +106,7 @@ async function bootstrap() {
 
     request.log.error(
       {
-        err: {
-          name: error?.name,
-          code: (error as { code?: unknown })?.code,
-          statusCode: rawStatusCode
-        },
+        err,
         path: requestPath,
         method: request.method
       },
@@ -133,7 +120,7 @@ async function bootstrap() {
         kind: statusCode >= 500 ? 'internal' : 'user_input',
         message: isJwtValidationRequest
           ? 'Unauthorized'
-          : toSafeClientMessage(error, statusCode)
+          : toSafeClientMessage(undefined, statusCode)
       }
     });
   });
