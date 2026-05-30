@@ -4,6 +4,8 @@
 
 FROM node:18-alpine AS build
 
+RUN apk add --no-cache python3 make g++ cairo-dev pango-dev jpeg-dev giflib-dev
+
 WORKDIR /usr/src/app
 
 # Copy and build NestJS server project

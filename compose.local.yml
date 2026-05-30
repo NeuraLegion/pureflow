@@ -71,7 +71,7 @@ services:
       test: ['CMD', 'wget', '--spider', '-q', 'http://nodejs:3000/api/config']
       timeout: 30s
     environment:
-      URL: http://localhost:3000
+      URL: http://0.0.0.0:3000
       CHAT_API_URL: http://ollama:11434/v1/chat/completions
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''

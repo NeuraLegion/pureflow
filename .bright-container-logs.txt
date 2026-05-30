@@ -1,0 +1,305 @@
+=== pureflow-db-1 ===
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+=== pureflow-keycloak-1 ===
+Updating the configuration and installing your custom providers, if any. Please wait.
+2026-05-30 11:03:23,506 INFO  [io.qua.hib.orm.dep.HibernateOrmProcessor] (build-8) A legacy persistence.xml file is present in the classpath. This file will be used to configure JPA/Hibernate ORM persistence units, and any configuration of the Hibernate ORM extension will be ignored. To ignore persistence.xml files instead, set the configuration property 'quarkus.hibernate-orm.persistence-xml.ignore' to 'true'.
+2026-05-30 11:03:25,668 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 3828ms
+Running the server in development mode. DO NOT use this configuration in production.
+2026-05-30 11:03:26,377 ERROR [org.keycloak.quarkus.runtime.configuration.mappers.PropertyMappers] (main) Hostname v1 options [hostname-strict-https] are still in use, please review your configuration
+2026-05-30 11:03:28,144 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (ForkJoinPool.commonPool-worker-1) Starting Infinispan embedded cache manager
+2026-05-30 11:03:28,241 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) Virtual threads support enabled
+2026-05-30 11:03:28,367 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
+2026-05-30 11:03:28,571 INFO  [org.infinispan.transaction.lookup.JBossStandaloneJTAManagerLookup] (ForkJoinPool.commonPool-worker-1) ISPN000107: Retrieving transaction manager Transaction: unknown
+2026-05-30 11:03:28,853 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2026-05-30 11:03:28,868 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_69488, Site name: null
+2026-05-30 11:03:29,516 INFO  [org.keycloak.exportimport.singlefile.SingleFileImportProvider] (main) Full importing from file /opt/keycloak/bin/../data/import/realm-export.json
+2026-05-30 11:03:29,705 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'pureflow' already exists. Import skipped
+2026-05-30 11:03:29,706 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
+2026-05-30 11:03:29,708 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: IGNORE_EXISTING
+2026-05-30 11:03:29,708 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
+2026-05-30 11:03:29,716 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
+2026-05-30 11:03:29,846 INFO  [io.quarkus] (main) Keycloak 26.1.2 on JVM (powered by Quarkus 3.15.3) started in 4.000s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
+2026-05-30 11:03:29,846 INFO  [io.quarkus] (main) Profile dev activated. 
+2026-05-30 11:03:29,846 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
+
+=== pureflow-keycloak-db-1 ===
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+=== pureflow-mailcatcher-1 ===
+Starting MailCatcher v0.10.0
+==> smtp://0.0.0.0:1025
+==> http://0.0.0.0:1080
+
+=== pureflow-nodejs-1 ===
+> broken-crystals@0.0.1 start:prod
+> node dist/main.js
+
+Primary 18 is running
+Worker 82 started
+Worker 82 died with code 1 and signal null
+Starting a new worker
+Worker 71 started
+Worker 27 started
+Worker 71 died with code 1 and signal null
+Starting a new worker
+Worker 27 died with code 1 and signal null
+Starting a new worker
+Worker 136 started
+Worker 136 died with code 1 and signal null
+Starting a new worker
+Worker 93 started
+Worker 93 died with code 1 and signal null
+Starting a new worker
+Worker 113 started
+Worker 113 died with code 1 and signal null
+Starting a new worker
+Worker 127 started
+Worker 25 started
+Worker 25 died with code 1 and signal null
+Starting a new worker
+Worker 127 died with code 1 and signal null
+Starting a new worker
+Worker 85 started
+Worker 60 started
+Worker 31 started
+Worker 60 died with code 1 and signal null
+Starting a new worker
+Worker 31 died with code 1 and signal null
+Starting a new worker
+Worker 85 died with code 1 and signal null
+Starting a new worker
+Worker 54 started
+Worker 26 started
+Worker 54 died with code 1 and signal null
+Starting a new worker
+Worker 26 died with code 1 and signal null
+Starting a new worker
+Worker 100 started
+Worker 28 started
+Worker 100 died with code 1 and signal null
+Starting a new worker
+Worker 28 died with code 1 and signal null
+Starting a new worker
+Worker 38 started
+Worker 53 started
+Worker 38 died with code 1 and signal null
+Starting a new worker
+Worker 29 started
+Worker 53 died with code 1 and signal null
+Starting a new worker
+Worker 29 died with code 1 and signal null
+Starting a new worker
+Worker 92 started
+Worker 92 died with code 1 and signal null
+Starting a new worker
+Worker 30 started
+Worker 30 died with code 1 and signal null
+Starting a new worker
+Worker 177 started
+Worker 177 died with code 1 and signal null
+Starting a new worker
+Worker 184 started
+Worker 184 died with code 1 and signal null
+Starting a new worker
+Worker 233 started
+Worker 233 died with code 1 and signal null
+Starting a new worker
+Worker 198 started
+Worker 198 died with code 1 and signal null
+Starting a new worker
+Worker 219 started
+Worker 219 died with code 1 and signal null
+Starting a new worker
+Worker 283 started
+Worker 283 died with code 1 and signal null
+Starting a new worker
+Worker 256 started
+Worker 186 started
+Worker 256 died with code 1 and signal null
+Starting a new worker
+Worker 212 started
+Worker 186 died with code 1 and signal null
+Starting a new worker
+Worker 212 died with code 1 and signal null
+Starting a new worker
+Worker 282 started
+Worker 282 died with code 1 and signal null
+Starting a new worker
+Worker 220 started
+Worker 220 died with code 1 and signal null
+Starting a new worker
+Worker 235 started
+Worker 281 started
+Worker 235 died with code 1 and signal null
+Starting a new worker
+Worker 281 died with code 1 and signal null
+Starting a new worker
+Worker 269 started
+Worker 269 died with code 1 and signal null
+Starting a new worker
+Worker 204 started
+Worker 204 died with code 1 and signal null
+Starting a new worker
+Worker 303 started
+Worker 254 started
+Worker 303 died with code 1 and signal null
+Starting a new worker
+Worker 254 died with code 1 and signal null
+Starting a new worker
+Worker 234 started
+Worker 234 died with code 1 and signal null
+Starting a new worker
+Worker 268 started
+Worker 268 died with code 1 and signal null
+Starting a new worker
+Worker 310 started
+Worker 310 died with code 1 and signal null
+Starting a new worker
+Worker 323 started
+Worker 323 died with code 1 and signal null
+Starting a new worker
+Worker 330 started
+Worker 330 died with code 1 and signal null
+Starting a new worker
+Worker 350 started
+Worker 350 died with code 1 and signal null
+Starting a new worker
+Worker 357 started
+Worker 357 died with code 1 and signal null
+Starting a new worker
+Worker 406 started
+Worker 343 started
+Worker 406 died with code 1 and signal null
+Starting a new worker
+Worker 343 died with code 1 and signal null
+Starting a new worker
+Worker 434 started
+Worker 434 died with code 1 and signal null
+Starting a new worker
+Worker 364 started
+Worker 418 started
+Worker 384 started
+Worker 364 died with code 1 and signal null
+Starting a new worker
+Worker 384 died with code 1 and signal null
+Starting a new worker
+Worker 418 died with code 1 and signal null
+Starting a new worker
+Worker 407 started
+Worker 407 died with code 1 and signal null
+Starting a new worker
+Worker 370 started
+Worker 370 died with code 1 and signal null
+Starting a new worker
+Worker 427 started
+Worker 441 started
+Worker 427 died with code 1 and signal null
+Starting a new worker
+Worker 441 died with code 1 and signal null
+Starting a new worker
+Worker 372 started
+Worker 372 died with code 1 and signal null
+Starting a new worker
+Worker 391 started
+Worker 391 died with code 1 and signal null
+Starting a new worker
+Worker 448 started
+Worker 448 died with code 1 and signal null
+Starting a new worker
+Worker 455 started
+Worker 455 died with code 1 and signal null
+Starting a new worker
+Worker 399 started
+Worker 462 started
+Worker 399 died with code 1 and signal null
+Starting a new worker
+Worker 462 died with code 1 and signal null
+Starting a new worker
+Worker 474 started
+Worker 474 died with code 1 and signal null
+Starting a new worker
+Worker 481 started
+Worker 481 died with code 1 and signal null
+Starting a new worker
+Worker 508 started
+Worker 488 started
+Worker 508 died with code 1 and signal null
+Starting a new worker
+Worker 522 started
+Worker 488 died with code 1 and signal null
+Starting a new worker
+Worker 522 died with code 1 and signal null
+Starting a new worker
+Worker 501 started
+Worker 501 died with code 1 and signal null
+Starting a new worker
+Worker 535 started
+Worker 528 started
+Worker 535 died with code 1 and signal null
+Starting a new worker
+Worker 565 started
+Worker 565 died with code 1 and signal null
+Starting a new worker
+Worker 528 died with code 1 and signal null
+Starting a new worker
+Worker 592 started
+Worker 592 died with code 1 and signal null
+Starting a new worker
+Worker 585 started
+Worker 585 died with code 1 and signal null
+Starting a new worker
+Worker 550 started
+Worker 550 died with code 1 and signal null
+Starting a new worker
+Worker 541 started
+Worker 541 died with code 1 and signal null
+Starting a new worker
+Worker 578 started
+Worker 578 died with code 1 and signal null
+Starting a new worker
+Worker 559 started
+Worker 559 died with code 1 and signal null
+Starting a new worker
+Worker 606 started
+Worker 606 died with code 1 and signal null
+Starting a new worker
+Worker 556 started
+Worker 514 started
+Worker 514 died with code 1 and signal null
+Starting a new worker
+Worker 556 died with code 1 and signal null
+Starting a new worker
+Worker 607 started
+Worker 607 died with code 1 and signal null
+Starting a new worker
+Worker 599 started
+Worker 599 died with code 1 and signal null
+Starting a new worker
+Worker 626 started
+Worker 626 died with code 1 and signal null
+Starting a new worker
+Worker 633 started
+Worker 633 died with code 1 and signal null
+Starting a new worker
+Worker 673 started
+Worker 673 died with code 1 and signal null
+Starting a new worker
+Worker 687 started
+Worker 687 died with code 1 and signal null
+Starting a new worker
+Worker 648 started
+Worker 648 died with code 1 and signal null
+Starting a new worker
+Worker 695 started
+Worker 695 died with code 1 and signal null
+Starting a new worker
+Worker 667 started
+Worker 667 died with code 1 and signal null
+Starting a new worker
+
+=== pureflow-ollama-1 ===
+[GIN] 2026/05/30 - 11:03:25 | 200 |      31.317µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/30 - 11:03:25 | 200 |      498.07µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/30 - 11:03:55 | 200 |      17.966µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/30 - 11:03:55 | 200 |     202.095µs |       127.0.0.1 | GET      "/api/tags"
