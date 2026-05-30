@@ -255,9 +255,8 @@ async function bootstrap() {
 
   const httpAdapter = app.getHttpAdapter();
 
-  app
-    .useGlobalInterceptors(new HeadersConfiguratorInterceptor())
-    .useGlobalFilters(new GlobalExceptionFilter(httpAdapter));
+  app.useGlobalInterceptors(new HeadersConfiguratorInterceptor());
+  app.useGlobalFilters(new GlobalExceptionFilter(httpAdapter));
 
   const options = new DocumentBuilder()
     .setTitle('Pure Flow')

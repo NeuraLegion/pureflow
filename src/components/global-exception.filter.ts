@@ -7,13 +7,17 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
-  UnauthorizedException
+  UnauthorizedException,
+  ExceptionFilter
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { GqlContextType } from '@nestjs/graphql';
 
 @Catch()
-export class GlobalExceptionFilter extends BaseExceptionFilter {
+export class GlobalExceptionFilter
+  extends BaseExceptionFilter
+  implements ExceptionFilter
+{
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
   private sanitizeHttpException(exception: HttpException): HttpException {
@@ -71,6 +75,22 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
         throw sanitizedException;
       }
 
+      const ctx = host.switchToHttp();
+      const response = ctx.getResponse();
+
+      if (response && typeof response.status === 'function') {
+        return response.status(sanitizedException.getStatus()).json({
+          success: false,
+          error: {
+            kind:
+              sanitizedException.getStatus() >= 500 ? 'internal' : 'user_input',
+            message:
+              (sanitizedException.getResponse() as { error?: string })?.error ||
+              'Request failed'
+          }
+        });
+      }
+
       return super.catch(sanitizedException, host);
     }
 
@@ -87,13 +107,32 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
       throw unprocessableException;
     }
 
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+
+    if (response && typeof response.status === 'function') {
+      return response.status(unprocessableException.getStatus()).json({
+        success: false,
+        error: {
+          kind: 'internal',
+          message: 'Internal Server Error'
+        }
+      });
+    }
+
     const applicationRef =
       this.applicationRef ||
       (this.httpAdapterHost && this.httpAdapterHost.httpAdapter);
 
     return applicationRef.reply(
       host.getArgByIndex(1),
-      unprocessableException.getResponse(),
+      {
+        success: false,
+        error: {
+          kind: 'internal',
+          message: 'Internal Server Error'
+        }
+      },
       unprocessableException.getStatus()
     );
   }
