@@ -102,26 +102,6 @@ async function bootstrap() {
     return fileName === 'nginx.conf';
   };
 
-  const toSafeClientMessage = (_err: unknown, statusCode: number): string => {
-    if (statusCode === 400) {
-      return 'Bad Request';
-    }
-
-    if (statusCode === 401) {
-      return 'Unauthorized';
-    }
-
-    if (statusCode === 403) {
-      return 'Forbidden';
-    }
-
-    if (statusCode === 404) {
-      return 'Not Found';
-    }
-
-    return 'Internal Server Error';
-  };
-
   server.setErrorHandler((error, request, reply) => {
     const requestPath = normalizeRequestPath(request.url);
     const isJwtValidationRequest = requestPath.startsWith('/api/auth/jwt/');
@@ -151,7 +131,15 @@ async function bootstrap() {
         kind: statusCode >= 500 ? 'internal' : 'user_input',
         message: isJwtValidationRequest
           ? 'Unauthorized'
-          : toSafeClientMessage(undefined, statusCode)
+          : statusCode === 400
+            ? 'Bad Request'
+            : statusCode === 401
+              ? 'Unauthorized'
+              : statusCode === 403
+                ? 'Forbidden'
+                : statusCode === 404
+                  ? 'Not Found'
+                  : 'Internal Server Error'
       }
     });
   });
