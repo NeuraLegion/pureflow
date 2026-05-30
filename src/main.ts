@@ -25,11 +25,27 @@ const renderDirList: ListRender = () => {
 };
 
 const toSafeErrorMessage = (err: unknown): string => {
-  if (err instanceof Error) {
-    return err.message;
+  if (err && typeof err === 'object') {
+    const statusCode = (err as { statusCode?: unknown }).statusCode;
+
+    if (statusCode === 400) {
+      return 'Bad Request';
+    }
+
+    if (statusCode === 401) {
+      return 'Unauthorized';
+    }
+
+    if (statusCode === 403) {
+      return 'Forbidden';
+    }
+
+    if (statusCode === 404) {
+      return 'Not Found';
+    }
   }
 
-  return typeof err === 'string' ? err : 'Unknown error';
+  return 'Internal Server Error';
 };
 
 async function bootstrap() {
