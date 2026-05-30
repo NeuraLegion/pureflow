@@ -29,15 +29,24 @@ export class AuthGuard implements CanActivate {
       const token = this.extractToken(request);
 
       if (!token) {
-        return false;
+        throw new UnauthorizedException({
+          error: 'Unauthorized'
+        });
       }
 
-      return await this.verifyToken(token, context);
-    } catch (err) {
-      this.logger.debug(`Failed to validate token: ${err.message}`);
+      const isValid = await this.verifyToken(token, context);
+
+      if (!isValid) {
+        throw new UnauthorizedException({
+          error: 'Unauthorized'
+        });
+      }
+
+      return true;
+    } catch {
+      this.logger.debug('Failed to validate token');
       throw new UnauthorizedException({
-        error: 'Unauthorized',
-        line: __filename
+        error: 'Unauthorized'
       });
     }
   }
@@ -71,14 +80,7 @@ export class AuthGuard implements CanActivate {
       context.getHandler()
     );
 
-    try {
-      return !!(await this.authService.validateToken(token, processorType));
-    } catch {
-      return !!(await this.authService.validateToken(
-        token,
-        JwtProcessorType.BEARER
-      ));
-    }
+    return !!(await this.authService.validateToken(token, processorType));
   }
 
   private checkIsBearer(bearer: string): boolean {

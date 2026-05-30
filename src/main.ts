@@ -6,7 +6,7 @@ import fastifyCookie from '@fastify/cookie';
 import session from '@fastify/session';
 import { GlobalExceptionFilter } from './components/global-exception.filter';
 import * as os from 'os';
-import { readFileSync, readFile, readdirSync } from 'fs';
+import { readFileSync, readFile } from 'fs';
 import cluster from 'cluster';
 import {
   FastifyAdapter,
@@ -18,57 +18,34 @@ import * as http from 'http';
 import * as https from 'https';
 import fastify from 'fastify';
 import { fastifyStatic, ListRender } from '@fastify/static';
-import { join, dirname } from 'path';
-import rawbody from 'raw-body';
+import { join } from 'path';
 
-const renderDirList: ListRender = (dirs, files) => {
-  const currDir = dirname((dirs[0] || files[0]).href);
-  const parentDir = dirname(currDir);
-  return `
-    <head><title>Index of ${currDir}/</title></head>
-    <html><body>
-      <h1>Index of ${currDir}/</h1>
-      <hr>
-      <table style="width: max(450px, 50%);">
-        <tr>
-          <td>
-            <a href="${parentDir}">../</a>
-          </td>
-          <td></td><td></td>
-        </tr>
-        ${dirs.map(
-          (dir) =>
-            `<tr>
-              <td>
-                <a href="${dir.href}">${dir.name}</a>
-              </td>
-              <td>
-                ${dir.stats.ctime.toLocaleString()}
-              </td>
-              <td>
-                -
-              </td>
-            </tr>`
-        )}
-        <br/>
-        ${files.map(
-          (file) =>
-            `<tr>
-              <td>
-                <a href="${file.href}">${file.name}</a>
-              </td>
-              <td>
-                ${file.stats.ctime.toLocaleString()}
-              </td>
-              <td>
-                ${file.stats.size}
-              </td>
-            </tr>`
-        )}
-      </table>
-      <hr>
-    </body></html>
-  `;
+const renderDirList: ListRender = () => {
+  return '<html><body><h1>Not Found</h1></body></html>';
+};
+
+const toSafeErrorMessage = (err: unknown): string => {
+  if (err && typeof err === 'object') {
+    const statusCode = (err as { statusCode?: unknown }).statusCode;
+
+    if (statusCode === 400) {
+      return 'Bad Request';
+    }
+
+    if (statusCode === 401) {
+      return 'Unauthorized';
+    }
+
+    if (statusCode === 403) {
+      return 'Forbidden';
+    }
+
+    if (statusCode === 404) {
+      return 'Not Found';
+    }
+  }
+
+  return 'Internal Server Error';
 };
 
 async function bootstrap() {
@@ -83,19 +60,107 @@ async function bootstrap() {
     trustProxy: true,
     onProtoPoisoning: 'ignore',
     https:
-      process.env.NODE_ENV === 'production'
+      process.env.NODE_ENV === 'production' &&
+      process.env.ENABLE_HTTPS === 'true'
         ? {
             cert: readFileSync(
               '/etc/letsencrypt/live/pureflow.com/fullchain.pem'
             ),
             key: readFileSync('/etc/letsencrypt/live/pureflow.com/privkey.pem')
           }
-        : null
+        : undefined
+  });
+
+  const normalizeRequestPath = (url?: string): string => {
+    const rawPath = url?.split('?')[0] ?? '';
+
+    try {
+      const decodedPath = decodeURIComponent(rawPath || '/');
+      return decodedPath.replace(/\/+/g, '/').toLowerCase();
+    } catch {
+      return (rawPath || '/').replace(/\/+/g, '/').toLowerCase();
+    }
+  };
+
+  const isSensitiveStaticPath = (url?: string): boolean => {
+    const normalizedPath = normalizeRequestPath(url);
+    const pathSegments = normalizedPath.split('/').filter(Boolean);
+    const fileName = pathSegments[pathSegments.length - 1] ?? '';
+
+    if (
+      normalizedPath === '/config.js' ||
+      normalizedPath === '/nginx.conf' ||
+      normalizedPath === '/.env' ||
+      normalizedPath.startsWith('/.git') ||
+      normalizedPath.startsWith('/.hg') ||
+      normalizedPath.startsWith('/.svn') ||
+      (normalizedPath.startsWith('/.') && normalizedPath !== '/.well-known')
+    ) {
+      return true;
+    }
+
+    return fileName === 'nginx.conf';
+  };
+
+  server.setErrorHandler((error, request, reply) => {
+    const requestPath = normalizeRequestPath(request.url);
+    const isJwtValidationRequest = requestPath.startsWith('/api/auth/jwt/');
+    const rawStatusCode =
+      typeof (error as { statusCode?: unknown })?.statusCode === 'number'
+        ? (error as { statusCode: number }).statusCode
+        : undefined;
+    const statusCode = isJwtValidationRequest
+      ? 401
+      : rawStatusCode && rawStatusCode >= 400 && rawStatusCode < 500
+        ? rawStatusCode
+        : 500;
+
+    request.log.error(
+      {
+        err: error,
+        path: requestPath,
+        method: request.method
+      },
+      'Unhandled request error'
+    );
+
+    reply.header('Content-Type', 'application/json; charset=utf-8');
+    reply.status(statusCode).send({
+      success: false,
+      error: {
+        kind: statusCode >= 500 ? 'internal' : 'user_input',
+        message: isJwtValidationRequest
+          ? 'Unauthorized'
+          : statusCode === 400
+            ? 'Bad Request'
+            : statusCode === 401
+              ? 'Unauthorized'
+              : statusCode === 403
+                ? 'Forbidden'
+                : statusCode === 404
+                  ? 'Not Found'
+                  : 'Internal Server Error'
+      }
+    });
   });
 
   server.setDefaultRoute((req, res) => {
     if (req.url && req.url.startsWith('/api')) {
       res.statusCode = 404;
+      return res.end(
+        JSON.stringify({
+          success: false,
+          error: {
+            kind: 'user_input',
+            message: 'Not Found'
+          }
+        })
+      );
+    }
+
+    if (isSensitiveStaticPath(req.url)) {
+      res.statusCode = 404;
+      res.setHeader('Content-Type', 'application/json');
       return res.end(
         JSON.stringify({
           success: false,
@@ -123,41 +188,38 @@ async function bootstrap() {
     );
   });
 
+  const blockSensitiveStaticPaths = (req, reply, done) => {
+    if (isSensitiveStaticPath(req.url)) {
+      reply.code(404).send({
+        success: false,
+        error: { kind: 'user_input', message: 'Not Found' }
+      });
+      return;
+    }
+
+    done();
+  };
+
   await server.register(fastifyStatic, {
     root: join(__dirname, '..', 'client', 'dist'),
     prefix: `/`,
     decorateReply: false,
     redirect: false,
     wildcard: false,
-    serveDotFiles: true
+    serveDotFiles: false,
+    preHandler: blockSensitiveStaticPaths
   });
-
-  for (const dir of readdirSync(join(__dirname, '..', 'client', 'vcs'))) {
-    await server.register(fastifyStatic, {
-      root: join(__dirname, '..', 'client', 'vcs', dir),
-      prefix: `/.${dir}`,
-      decorateReply: false,
-      redirect: true,
-      index: false,
-      list: {
-        format: 'html',
-        render: renderDirList
-      },
-      serveDotFiles: true
-    });
-  }
 
   await server.register(fastifyStatic, {
     root: join(__dirname, '..', 'client', 'dist', 'vendor'),
     prefix: `/vendor`,
     decorateReply: false,
-    redirect: true,
+    redirect: false,
     index: false,
-    list: {
-      format: 'html',
-      render: renderDirList
-    },
-    serveDotFiles: true
+    list: false,
+    serveDotFiles: false,
+    renderList: renderDirList,
+    preHandler: blockSensitiveStaticPaths
   });
 
   const app: NestFastifyApplication = await NestFactory.create(
@@ -181,13 +243,11 @@ async function bootstrap() {
       httpOnly: false
     }
   });
-  server.addContentTypeParser('*', (req) => rawbody(req.raw));
 
   const httpAdapter = app.getHttpAdapter();
 
-  app
-    .useGlobalInterceptors(new HeadersConfiguratorInterceptor())
-    .useGlobalFilters(new GlobalExceptionFilter(httpAdapter));
+  app.useGlobalInterceptors(new HeadersConfiguratorInterceptor());
+  app.useGlobalFilters(new GlobalExceptionFilter(httpAdapter));
 
   const options = new DocumentBuilder()
     .setTitle('Pure Flow')
@@ -231,10 +291,31 @@ async function bootstrap() {
 
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(3000, '0.0.0.0');
+  await app.init();
+  await server.listen({
+    port: Number(process.env.PORT || 3000),
+    host: '0.0.0.0'
+  });
+  console.log(`Application is listening on 0.0.0.0:${process.env.PORT || 3000}`);
 }
 
-if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
+process.on('unhandledRejection', (err) => {
+  console.error(
+    `Unhandled rejection during startup/runtime: ${toSafeErrorMessage(err)}`
+  );
+});
+
+process.on('uncaughtException', (err) => {
+  console.error(
+    `Uncaught exception during startup/runtime: ${toSafeErrorMessage(err)}`
+  );
+});
+
+if (
+  cluster.isPrimary &&
+  process.env.NODE_ENV === 'production' &&
+  process.env.ENABLE_CLUSTER === 'true'
+) {
   console.log(`Primary ${process.pid} is running`);
 
   const numCPUs = os.cpus().length;
@@ -250,6 +331,9 @@ if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
     cluster.fork();
   });
 } else {
-  bootstrap();
+  bootstrap().catch((err) => {
+    console.error(`Bootstrap failed: ${toSafeErrorMessage(err)}`);
+    process.exit(1);
+  });
   console.log(`Worker ${process.pid} started`);
 }

@@ -99,7 +99,6 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(CsrfGuard)
   @ApiCreatedResponse({
     type: LoginResponse
   })
@@ -663,8 +662,9 @@ export class AuthController {
         });
       }
 
+      this.logger.error('OIDC login failed', err?.stack || err);
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred.'
       });
     }
   }
@@ -675,8 +675,9 @@ export class AuthController {
     try {
       user = await this.usersService.findByEmail(req.user);
     } catch (err) {
+      this.logger.error('Basic login failed', err?.stack || err);
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred.'
       });
     }
 

@@ -34,42 +34,28 @@ export class AppService {
           res(data.toString('ascii'));
         });
 
-        ps.on('error', (err) => rej(err.message));
+        ps.on('error', (err) => {
+          this.logger.error(
+            `child process spawn error: ${err instanceof Error ? err.message : String(err)}`
+          );
+          rej(new Error('An internal error has occurred.'));
+        });
 
         ps.on('close', (code) =>
           this.logger.debug(`child process exited with code ${code}`)
         );
       } catch (err) {
-        rej(err.message);
+        this.logger.error(
+          `launchCommand failed: ${err instanceof Error ? err.message : String(err)}`
+        );
+        rej(new Error('An internal error has occurred.'));
       }
     });
   }
 
-  getConfig(): AppConfig {
-    const dbSchema = this.configService.get<string>(
-        OrmModuleConfigProperties.ENV_DATABASE_SCHEMA
-      ),
-      dbHost = this.configService.get<string>(
-        OrmModuleConfigProperties.ENV_DATABASE_HOST
-      ),
-      dbPort = this.configService.get<string>(
-        OrmModuleConfigProperties.ENV_DATABASE_PORT
-      ),
-      dbUser = this.configService.get<string>(
-        OrmModuleConfigProperties.ENV_DATABASE_USER
-      ),
-      dbPwd = this.configService.get<string>(
-        OrmModuleConfigProperties.ENV_DATABASE_PASSWORD
-      );
-
+  getConfig(): { message: string } {
     return {
-      awsBucket: this.configService.get<string>(
-        AppModuleConfigProperties.ENV_AWS_BUCKET
-      ),
-      sql: `postgres://${dbUser}:${dbPwd}@${dbHost}:${dbPort}/${dbSchema} `,
-      googlemaps: this.configService.get<string>(
-        AppModuleConfigProperties.ENV_GOOGLE_MAPS
-      )
+      message: 'Configuration endpoint no longer exposes secret values'
     };
   }
 
