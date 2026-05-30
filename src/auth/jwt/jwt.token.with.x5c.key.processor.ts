@@ -21,8 +21,8 @@ export class JwtTokenWithX5CKeyProcessor extends JwtTokenProcessor {
       }
 
       const certOrKey = keys[0].trim();
-
       let keyLike: jose.KeyLike;
+
       try {
         keyLike = await jose.importX509(certOrKey, 'RS256');
       } catch {
