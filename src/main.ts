@@ -103,15 +103,21 @@ async function bootstrap() {
   server.setErrorHandler((error, request, reply) => {
     request.log.error({ err: error }, 'Unhandled request error');
 
-    const statusCode =
-      typeof (error as { statusCode?: unknown })?.statusCode === 'number'
+    const requestPath = normalizeRequestPath(request.url);
+    const authValidationPath = '/api/auth/jwt/weak-key/validate';
+    const isAuthValidationRequest = requestPath === authValidationPath;
+    const statusCode = isAuthValidationRequest
+      ? 401
+      : typeof (error as { statusCode?: unknown })?.statusCode === 'number'
         ? ((error as { statusCode: number }).statusCode >= 400 &&
           (error as { statusCode: number }).statusCode < 500
             ? (error as { statusCode: number }).statusCode
             : 500)
         : 500;
 
-    const message = toSafeClientMessage(error, statusCode);
+    const message = isAuthValidationRequest
+      ? 'Unauthorized'
+      : toSafeClientMessage(error, statusCode);
 
     reply.status(statusCode).send({
       success: false,
