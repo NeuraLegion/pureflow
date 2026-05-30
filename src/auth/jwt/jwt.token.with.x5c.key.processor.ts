@@ -14,9 +14,6 @@ export class JwtTokenWithX5CKeyProcessor extends JwtTokenProcessor {
       const [header, payload] = this.parse(token);
       const keys = header.x5c;
 
-      // x5c is attacker-controlled and should be a certificate chain in JWT headers.
-      // The application only expects a single trusted certificate material value here,
-      // but validation should reject malformed values without breaking valid auth flows.
       if (!Array.isArray(keys) || typeof keys[0] !== 'string' || !keys[0].trim()) {
         throw new UnauthorizedException({
           error: 'Unauthorized'
@@ -25,9 +22,6 @@ export class JwtTokenWithX5CKeyProcessor extends JwtTokenProcessor {
 
       const certOrKey = keys[0].trim();
 
-      // jose.importPKCS8() is for private keys and will fail for cert/public key material.
-      // For validation, use importX509() for certificate material and fall back to PKCS8 only
-      // if the configured material is actually a private key in this benchmark app.
       let keyLike: jose.KeyLike;
       try {
         keyLike = await jose.importX509(certOrKey, 'RS256');
