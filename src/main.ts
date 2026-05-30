@@ -48,26 +48,6 @@ const toSafeErrorMessage = (err: unknown): string => {
   return 'Internal Server Error';
 };
 
-const toSafeClientMessage = (_error: unknown, statusCode: number): string => {
-  if (statusCode === 400) {
-    return 'Bad Request';
-  }
-
-  if (statusCode === 401) {
-    return 'Unauthorized';
-  }
-
-  if (statusCode === 403) {
-    return 'Forbidden';
-  }
-
-  if (statusCode === 404) {
-    return 'Not Found';
-  }
-
-  return statusCode >= 500 ? 'Internal Server Error' : 'Request failed';
-};
-
 async function bootstrap() {
   http.globalAgent.maxSockets = Infinity;
   https.globalAgent.maxSockets = Infinity;
@@ -90,6 +70,37 @@ async function bootstrap() {
           }
         : undefined
   });
+
+  const normalizeRequestPath = (url?: string): string => {
+    const rawPath = url?.split('?')[0] ?? '';
+
+    try {
+      const decodedPath = decodeURIComponent(rawPath || '/');
+      return decodedPath.replace(/\/+/g, '/').toLowerCase();
+    } catch {
+      return (rawPath || '/').replace(/\/+/g, '/').toLowerCase();
+    }
+  };
+
+  const isSensitiveStaticPath = (url?: string): boolean => {
+    const normalizedPath = normalizeRequestPath(url);
+    const pathSegments = normalizedPath.split('/').filter(Boolean);
+    const fileName = pathSegments[pathSegments.length - 1] ?? '';
+
+    if (
+      normalizedPath === '/config.js' ||
+      normalizedPath === '/nginx.conf' ||
+      normalizedPath === '/.env' ||
+      normalizedPath.startsWith('/.git') ||
+      normalizedPath.startsWith('/.hg') ||
+      normalizedPath.startsWith('/.svn') ||
+      (normalizedPath.startsWith('/.') && normalizedPath !== '/.well-known')
+    ) {
+      return true;
+    }
+
+    return fileName === 'nginx.conf';
+  };
 
   server.setErrorHandler((error, request, reply) => {
     const requestPath = normalizeRequestPath(request.url);
@@ -124,37 +135,6 @@ async function bootstrap() {
       }
     });
   });
-
-  const normalizeRequestPath = (url?: string): string => {
-    const rawPath = url?.split('?')[0] ?? '';
-
-    try {
-      const decodedPath = decodeURIComponent(rawPath || '/');
-      return decodedPath.replace(/\/+/g, '/').toLowerCase();
-    } catch {
-      return (rawPath || '/').replace(/\/+/g, '/').toLowerCase();
-    }
-  };
-
-  const isSensitiveStaticPath = (url?: string): boolean => {
-    const normalizedPath = normalizeRequestPath(url);
-    const pathSegments = normalizedPath.split('/').filter(Boolean);
-    const fileName = pathSegments[pathSegments.length - 1] ?? '';
-
-    if (
-      normalizedPath === '/config.js' ||
-      normalizedPath === '/nginx.conf' ||
-      normalizedPath === '/.env' ||
-      normalizedPath.startsWith('/.git') ||
-      normalizedPath.startsWith('/.hg') ||
-      normalizedPath.startsWith('/.svn') ||
-      (normalizedPath.startsWith('/.') && normalizedPath !== '/.well-known')
-    ) {
-      return true;
-    }
-
-    return fileName === 'nginx.conf';
-  };
 
   server.setDefaultRoute((req, res) => {
     if (req.url && req.url.startsWith('/api')) {
