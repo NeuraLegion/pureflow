@@ -98,10 +98,7 @@ export class GlobalExceptionFilter
       error: 'An internal error has occurred.'
     });
 
-    this.logger.error(
-      'Unhandled exception intercepted',
-      exception instanceof Error ? exception.stack : undefined
-    );
+    this.logger.error('Unhandled exception intercepted');
 
     if (gql) {
       throw unprocessableException;

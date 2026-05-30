@@ -101,29 +101,38 @@ async function bootstrap() {
   });
 
   server.setErrorHandler((error, request, reply) => {
-    request.log.error({ err: error }, 'Unhandled request error');
-
     const requestPath = normalizeRequestPath(request.url);
-    const authValidationPath = '/api/auth/jwt/weak-key/validate';
-    const isAuthValidationRequest = requestPath === authValidationPath;
-    const statusCode = isAuthValidationRequest
+    const isJwtValidationRequest = requestPath.startsWith('/api/auth/jwt/');
+    const rawStatusCode =
+      typeof (error as { statusCode?: unknown })?.statusCode === 'number'
+        ? (error as { statusCode: number }).statusCode
+        : undefined;
+    const statusCode = isJwtValidationRequest
       ? 401
-      : typeof (error as { statusCode?: unknown })?.statusCode === 'number'
-        ? ((error as { statusCode: number }).statusCode >= 400 &&
-          (error as { statusCode: number }).statusCode < 500
-            ? (error as { statusCode: number }).statusCode
-            : 500)
+      : rawStatusCode && rawStatusCode >= 400 && rawStatusCode < 500
+        ? rawStatusCode
         : 500;
 
-    const message = isAuthValidationRequest
-      ? 'Unauthorized'
-      : toSafeClientMessage(error, statusCode);
+    request.log.error(
+      {
+        err: {
+          name: error?.name,
+          code: (error as { code?: unknown })?.code,
+          statusCode: rawStatusCode
+        },
+        path: requestPath,
+        method: request.method
+      },
+      'Unhandled request error'
+    );
 
     reply.status(statusCode).send({
       success: false,
       error: {
         kind: statusCode >= 500 ? 'internal' : 'user_input',
-        message
+        message: isJwtValidationRequest
+          ? 'Unauthorized'
+          : toSafeClientMessage(error, statusCode)
       }
     });
   });

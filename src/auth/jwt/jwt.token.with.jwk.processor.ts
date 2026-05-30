@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import * as jose from 'jose';
 import { JwtTokenProcessor as JwtTokenProcessor } from './jwt.token.processor';
 
@@ -16,23 +16,26 @@ export class JwtTokenWithJWKProcessor extends JwtTokenProcessor {
     try {
       const [header, payload] = this.parse(token);
 
-      if (!header.jwk) {
-        throw new Error('Unsupported token');
+      if (!header.jwk || typeof header.jwk !== 'object') {
+        throw new UnauthorizedException({
+          error: 'Unauthorized'
+        });
       }
 
-      if (!header.jwk.kty) {
-        return payload;
+      if (!header.jwk.kty || typeof header.jwk.kty !== 'string') {
+        throw new UnauthorizedException({
+          error: 'Unauthorized'
+        });
       }
+
       const keyLike = await jose.importJWK(header.jwk);
+      await jose.jwtVerify(token, keyLike);
 
-      const res = await jose.jwtVerify(token, keyLike);
-
-      if (res) {
-        return payload;
-      }
-      throw new Error('Could not validate token');
+      return payload;
     } catch {
-      throw new Error('Could not validate token');
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
     }
   }
 
