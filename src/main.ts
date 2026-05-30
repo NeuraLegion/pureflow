@@ -48,6 +48,35 @@ const toSafeErrorMessage = (err: unknown): string => {
   return 'Internal Server Error';
 };
 
+const toSafeClientMessage = (error: unknown, statusCode: number): string => {
+  if (statusCode === 401) {
+    return 'Unauthorized';
+  }
+
+  if (statusCode === 403) {
+    return 'Forbidden';
+  }
+
+  if (statusCode === 404) {
+    return 'Not Found';
+  }
+
+  if (statusCode === 400) {
+    return 'Bad Request';
+  }
+
+  const code =
+    typeof (error as { code?: unknown })?.code === 'string'
+      ? (error as { code: string }).code
+      : undefined;
+
+  if (code && ['ENOENT', 'EACCES', 'EPERM', 'ENOTDIR'].includes(code)) {
+    return 'Internal Server Error';
+  }
+
+  return statusCode >= 500 ? 'Internal Server Error' : 'Request failed';
+};
+
 async function bootstrap() {
   http.globalAgent.maxSockets = Infinity;
   https.globalAgent.maxSockets = Infinity;
@@ -82,18 +111,7 @@ async function bootstrap() {
             : 500)
         : 500;
 
-    const message =
-      statusCode === 401
-        ? 'Unauthorized'
-        : statusCode === 403
-        ? 'Forbidden'
-        : statusCode === 404
-        ? 'Not Found'
-        : statusCode === 400
-        ? 'Bad Request'
-        : statusCode >= 500
-        ? 'Internal Server Error'
-        : 'Request failed';
+    const message = toSafeClientMessage(error, statusCode);
 
     reply.status(statusCode).send({
       success: false,

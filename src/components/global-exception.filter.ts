@@ -80,7 +80,7 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
 
     this.logger.error(
       'Unhandled exception intercepted',
-      exception instanceof Error ? exception.message : 'Unknown error'
+      exception instanceof Error ? exception.stack : undefined
     );
 
     if (gql) {
