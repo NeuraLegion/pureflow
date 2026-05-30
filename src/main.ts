@@ -102,6 +102,26 @@ async function bootstrap() {
     return fileName === 'nginx.conf';
   };
 
+  const toSafeClientMessage = (_err: unknown, statusCode: number): string => {
+    if (statusCode === 400) {
+      return 'Bad Request';
+    }
+
+    if (statusCode === 401) {
+      return 'Unauthorized';
+    }
+
+    if (statusCode === 403) {
+      return 'Forbidden';
+    }
+
+    if (statusCode === 404) {
+      return 'Not Found';
+    }
+
+    return 'Internal Server Error';
+  };
+
   server.setErrorHandler((error, request, reply) => {
     const requestPath = normalizeRequestPath(request.url);
     const isJwtValidationRequest = requestPath.startsWith('/api/auth/jwt/');
