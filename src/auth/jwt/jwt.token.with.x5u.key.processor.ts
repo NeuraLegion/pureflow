@@ -22,8 +22,23 @@ export class JwtTokenWithX5UKeyProcessor extends JwtTokenProcessor {
         throw new UnauthorizedException('Invalid JWT token');
       }
 
-      this.log.debug('Loading key from configured x5u source');
-      const crtPayload = await this.httpClient.loadPlain(url);
+      if (url !== this.x5uUrl) {
+        throw new UnauthorizedException('Invalid JWT token');
+      }
+
+      let parsedTrustedUrl: URL;
+      try {
+        parsedTrustedUrl = new URL(this.x5uUrl);
+      } catch {
+        throw new UnauthorizedException('Invalid JWT token');
+      }
+
+      if (parsedTrustedUrl.protocol !== 'https:') {
+        throw new UnauthorizedException('Invalid JWT token');
+      }
+
+      this.log.debug('Loading key from trusted x5u source');
+      const crtPayload = await this.httpClient.loadPlain(parsedTrustedUrl.toString());
       const x509 = await jose.importX509(crtPayload, 'RS256');
 
       return await jose.jwtVerify(token, x509);

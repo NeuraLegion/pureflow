@@ -57,17 +57,18 @@ export class HttpClientService {
   }
 
   async loadPlain(url: string): Promise<string> {
+    this.validateUrl(url);
     const resp = await axios.get<ArrayBuffer>(url, {
       responseType: 'arraybuffer'
     });
 
     if (resp.status != 200) {
-      throw new Error(`Failed to load url: ${url}. Status ${resp.status}`);
+      throw new Error('Failed to load remote content');
     }
 
     const buffer = Buffer.from(resp.data);
     const text = buffer.toString();
-    this.log.debug(`Loaded: ${text}`);
+    this.log.debug('Loaded remote plain content');
     return text;
   }
 
