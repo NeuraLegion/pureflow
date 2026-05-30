@@ -79,14 +79,25 @@ export class GlobalExceptionFilter
       const response = ctx.getResponse();
 
       if (response && typeof response.status === 'function') {
-        return response.status(sanitizedException.getStatus()).json({
+        const status = sanitizedException.getStatus();
+        const message =
+          status === 400
+            ? 'Bad Request'
+            : status === 401
+              ? 'Unauthorized'
+              : status === 403
+                ? 'Forbidden'
+                : status === 404
+                  ? 'Not Found'
+                  : status >= 500
+                    ? 'Internal Server Error'
+                    : 'Request failed';
+
+        return response.status(status).json({
           success: false,
           error: {
-            kind:
-              sanitizedException.getStatus() >= 500 ? 'internal' : 'user_input',
-            message:
-              (sanitizedException.getResponse() as { error?: string })?.error ||
-              'Request failed'
+            kind: status >= 500 ? 'internal' : 'user_input',
+            message
           }
         });
       }

@@ -126,6 +126,7 @@ async function bootstrap() {
       'Unhandled request error'
     );
 
+    reply.header('Content-Type', 'application/json; charset=utf-8');
     reply.status(statusCode).send({
       success: false,
       error: {
