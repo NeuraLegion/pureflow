@@ -122,9 +122,54 @@ async function bootstrap() {
     });
   });
 
+  const normalizeRequestPath = (url?: string): string => {
+    const rawPath = url?.split('?')[0] ?? '';
+
+    try {
+      const decodedPath = decodeURIComponent(rawPath || '/');
+      return decodedPath.replace(/\/+/g, '/').toLowerCase();
+    } catch {
+      return (rawPath || '/').replace(/\/+/g, '/').toLowerCase();
+    }
+  };
+
+  const isSensitiveStaticPath = (url?: string): boolean => {
+    const normalizedPath = normalizeRequestPath(url);
+    const pathSegments = normalizedPath.split('/').filter(Boolean);
+    const fileName = pathSegments[pathSegments.length - 1] ?? '';
+
+    if (
+      normalizedPath === '/config.js' ||
+      normalizedPath === '/nginx.conf' ||
+      normalizedPath === '/.env' ||
+      normalizedPath.startsWith('/.git') ||
+      normalizedPath.startsWith('/.hg') ||
+      normalizedPath.startsWith('/.svn') ||
+      (normalizedPath.startsWith('/.') && normalizedPath !== '/.well-known')
+    ) {
+      return true;
+    }
+
+    return fileName === 'nginx.conf';
+  };
+
   server.setDefaultRoute((req, res) => {
     if (req.url && req.url.startsWith('/api')) {
       res.statusCode = 404;
+      return res.end(
+        JSON.stringify({
+          success: false,
+          error: {
+            kind: 'user_input',
+            message: 'Not Found'
+          }
+        })
+      );
+    }
+
+    if (isSensitiveStaticPath(req.url)) {
+      res.statusCode = 404;
+      res.setHeader('Content-Type', 'application/json');
       return res.end(
         JSON.stringify({
           success: false,
@@ -153,17 +198,7 @@ async function bootstrap() {
   });
 
   const blockSensitiveStaticPaths = (req, reply, done) => {
-    const url = req.url?.split('?')[0] ?? '';
-    const isBlockedPath =
-      url === '/config.js' ||
-      url === '/nginx.conf' ||
-      url === '/.env' ||
-      url.startsWith('/.git') ||
-      url.startsWith('/.hg') ||
-      url.startsWith('/.svn') ||
-      (url.startsWith('/.') && url !== '/.well-known');
-
-    if (isBlockedPath) {
+    if (isSensitiveStaticPath(req.url)) {
       reply.code(404).send({
         success: false,
         error: { kind: 'user_input', message: 'Not Found' }

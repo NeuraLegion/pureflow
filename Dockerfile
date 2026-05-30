@@ -18,6 +18,7 @@ COPY --chown=node:node config ./config
 COPY --chown=node:node keycloak ./keycloak
 COPY --chown=node:node src ./src
 COPY --chown=node:node client/package*.json ./client/
+COPY --chown=node:node client/package-lock.json ./client/
 COPY --chown=node:node client/src ./client/src
 COPY --chown=node:node client/public ./client/public
 COPY --chown=node:node client/typings ./client/typings
