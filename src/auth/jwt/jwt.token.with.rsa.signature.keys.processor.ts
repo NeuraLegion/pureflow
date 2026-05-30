@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
-import { decode, encode } from 'jwt-simple';
+import { createPublicKey, createVerify } from 'crypto';
+import { encode } from 'jwt-simple';
 import { JwtTokenProcessor as JwtTokenProcessor } from './jwt.token.processor';
 
 export class JwtTokenWithRSASignatureKeysProcessor extends JwtTokenProcessor {
@@ -13,12 +14,30 @@ export class JwtTokenWithRSASignatureKeysProcessor extends JwtTokenProcessor {
   async validateToken(token: string): Promise<unknown> {
     this.log.debug('Call validateToken');
 
-    const [header] = this.parse(token);
+    const [header, payload] = this.parse(token);
     if (header.alg !== 'RS256') {
       throw new Error('Invalid JWT algorithm');
     }
 
-    return decode(token, this.publicKey, true, 'RS256');
+    const parts = token.split('.');
+    if (parts.length !== 3 || !parts[2]) {
+      throw new Error('Invalid JWT signature');
+    }
+
+    const verifier = createVerify('RSA-SHA256');
+    verifier.update(`${parts[0]}.${parts[1]}`);
+    verifier.end();
+
+    const isValid = verifier.verify(
+      createPublicKey(this.publicKey),
+      Buffer.from(parts[2], 'base64url')
+    );
+
+    if (!isValid) {
+      throw new Error('Invalid JWT signature');
+    }
+
+    return payload;
   }
 
   async createToken(payload: unknown): Promise<string> {
