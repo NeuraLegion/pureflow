@@ -106,7 +106,7 @@ async function bootstrap() {
 
     request.log.error(
       {
-        err,
+        err: error,
         path: requestPath,
         method: request.method
       },
