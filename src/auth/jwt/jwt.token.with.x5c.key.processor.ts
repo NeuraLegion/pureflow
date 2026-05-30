@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import * as jose from 'jose';
 import { JwtTokenProcessor as JwtTokenProcessor } from './jwt.token.processor';
 
@@ -12,9 +12,26 @@ export class JwtTokenWithX5CKeyProcessor extends JwtTokenProcessor {
     const [header] = this.parse(token);
 
     const keys = header.x5c;
-    const keyLike = await jose.importPKCS8(keys[0], 'RS256');
-    this.log.debug(`Taking keys from ${JSON.stringify(keys)}`);
-    return await jose.jwtVerify(token, keyLike);
+    if (
+      !Array.isArray(keys) ||
+      typeof keys[0] !== 'string' ||
+      !keys[0].trim()
+    ) {
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
+    }
+
+    try {
+      const keyLike = await jose.importPKCS8(keys[0], 'RS256');
+      this.log.debug('Validating x5c token');
+      return await jose.jwtVerify(token, keyLike);
+    } catch {
+      this.log.warn('Invalid x5c token');
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
+    }
   }
 
   async createToken(payload: jose.JWTPayload): Promise<string> {
