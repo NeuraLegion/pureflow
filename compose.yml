@@ -1,7 +1,7 @@
 services:
   db:
     image: 'postgres:17-alpine'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 10s
       retries: 10
@@ -18,8 +18,10 @@ services:
       - '.data/nodejs:/var/lib/postgresql/data/'
 
   nodejs:
-    image: 'dull/pureflow'
-    restart: always
+    # image: dull/pureflow  # replaced — must build from source
+    build:
+      context: .
+    restart: on-failure
     healthcheck:
       interval: 5s
       retries: 10
@@ -32,6 +34,7 @@ services:
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''
       CHAT_API_MAX_TOKENS: 200
+      URL: http://0.0.0.0:3000
     deploy:
       restart_policy:
         condition: on-failure
@@ -56,7 +59,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
-    restart: always
+    restart: no
     logging:
       options:
         max-file: '5'
@@ -64,6 +67,7 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
     command: --interval 300 --debug
+    profiles: ['optional']
 
   keycloak-db:
     image: 'postgres:17-alpine'
