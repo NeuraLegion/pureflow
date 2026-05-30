@@ -27,7 +27,19 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
           ? new UnauthorizedException({
               error: 'Unauthorized'
             })
-          : exception;
+          : new HttpException(
+              {
+                error:
+                  status === 404
+                    ? 'Not Found'
+                    : status === 403
+                    ? 'Forbidden'
+                    : status === 400
+                    ? 'Bad Request'
+                    : 'Request failed'
+              },
+              status
+            );
 
       if (gql) {
         throw sanitizedException;

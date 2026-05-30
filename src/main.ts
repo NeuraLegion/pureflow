@@ -55,6 +55,39 @@ async function bootstrap() {
         : undefined
   });
 
+  server.setErrorHandler((error, request, reply) => {
+    request.log.error({ err: error }, 'Unhandled request error');
+
+    const statusCode =
+      typeof (error as { statusCode?: unknown })?.statusCode === 'number'
+        ? ((error as { statusCode: number }).statusCode >= 400 &&
+          (error as { statusCode: number }).statusCode < 500
+            ? (error as { statusCode: number }).statusCode
+            : 500)
+        : 500;
+
+    const message =
+      statusCode === 401
+        ? 'Unauthorized'
+        : statusCode === 403
+        ? 'Forbidden'
+        : statusCode === 404
+        ? 'Not Found'
+        : statusCode === 400
+        ? 'Bad Request'
+        : statusCode >= 500
+        ? 'Internal Server Error'
+        : 'Request failed';
+
+    reply.status(statusCode).send({
+      success: false,
+      error: {
+        kind: statusCode >= 500 ? 'internal' : 'user_input',
+        message
+      }
+    });
+  });
+
   server.setDefaultRoute((req, res) => {
     if (req.url && req.url.startsWith('/api')) {
       res.statusCode = 404;
