@@ -14,22 +14,35 @@ export class JwtTokenWithJKUProcessor extends JwtTokenProcessor {
 
   async validateToken(token: string): Promise<unknown> {
     this.log.debug('Call validateToken');
-    const [header, payload] = this.parse(token);
 
-    const url = header.jku;
-    if (!url || url !== this.jkuUrl) {
-      this.log.warn('Rejected JWT with unapproved JKU value');
-      throw new UnauthorizedException('Could not validate');
-    }
+    try {
+      const [header, payload] = this.parse(token);
 
-    this.log.debug('Calling configured JWK URL');
-    const jwkRes: jose.JWK = await this.httpClient.loadJSON(url);
-    const keyLike = await jose.importJWK(jwkRes);
-    const verifyRes = await jose.jwtVerify(token, keyLike);
-    if (verifyRes) {
-      return payload;
+      const url = header.jku;
+      if (!url || url !== this.jkuUrl) {
+        this.log.warn('Rejected JWT with unapproved JKU value');
+        throw new UnauthorizedException({
+          error: 'Unauthorized'
+        });
+      }
+
+      this.log.debug('Calling configured JWK URL');
+      const jwkRes: jose.JWK = await this.httpClient.loadJSON(url);
+      const keyLike = await jose.importJWK(jwkRes);
+      const verifyRes = await jose.jwtVerify(token, keyLike);
+      if (verifyRes) {
+        return payload;
+      }
+
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
+    } catch (error) {
+      this.log.warn('JKU JWT validation failed');
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
     }
-    throw new Error('Could not validate');
   }
 
   async createToken(payload: jose.JWTPayload): Promise<string> {

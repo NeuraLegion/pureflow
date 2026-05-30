@@ -3,7 +3,8 @@ import {
   Catch,
   HttpException,
   InternalServerErrorException,
-  Logger
+  Logger,
+  UnauthorizedException
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { GqlContextType } from '@nestjs/graphql';
@@ -16,11 +17,23 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
     const gql = host.getType<GqlContextType>() === 'graphql';
 
     if (exception instanceof HttpException) {
+      const status = exception.getStatus();
+      const sanitizedException =
+        status >= 500
+          ? new InternalServerErrorException({
+              error: 'An internal error has occurred.'
+            })
+          : status === 401
+          ? new UnauthorizedException({
+              error: 'Unauthorized'
+            })
+          : exception;
+
       if (gql) {
-        throw exception;
+        throw sanitizedException;
       }
 
-      return super.catch(exception, host);
+      return super.catch(sanitizedException, host);
     }
 
     const unprocessableException = new InternalServerErrorException({

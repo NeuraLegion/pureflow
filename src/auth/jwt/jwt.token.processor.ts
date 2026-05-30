@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtHeader } from './jwt.header';
 
 export abstract class JwtTokenProcessor {
@@ -28,7 +28,9 @@ export abstract class JwtTokenProcessor {
 
       return [header, payload];
     } catch {
-      throw new Error('Invalid JWT token');
+      throw new UnauthorizedException({
+        error: 'Unauthorized'
+      });
     }
   }
 
