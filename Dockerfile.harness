@@ -1,0 +1,35 @@
+FROM node:20-bookworm-slim
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Minimal runtime dependencies for the harness and target files
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install only the packages actually used by the harness/targets.
+# - express: harness
+# - @nestjs/common, @nestjs/config: target imports
+# - axios: HttpClientService / KeyCloakService
+# - @xmldom/xmldom, xpath: PartnersService
+# - jwk-to-pem, jsonwebtoken: KeyCloakService
+RUN npm install --omit=dev --no-package-lock --no-save \
+    express \
+    @nestjs/common \
+    @nestjs/config \
+    axios \
+    @xmldom/xmldom \
+    xpath \
+    jwk-to-pem \
+    jsonwebtoken
+
+# Copy the full project source to preserve transitive require chains
+COPY . /app
+
+# Copy the harness into the image
+COPY harness.js /app/harness.js
+
+EXPOSE 3001
+
+CMD ["node", "harness.js"]
