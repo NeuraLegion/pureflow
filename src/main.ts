@@ -49,20 +49,10 @@ async function bootstrap() {
       : null
   });
 
+  // Let Nest handle routing for /api endpoints so auth/login endpoints
+  // can return their intended responses instead of being intercepted by
+  // a generic 404 default route.
   server.setDefaultRoute((req, res) => {
-    if (req.url && req.url.startsWith('/api')) {
-      res.statusCode = 404;
-      return res.end(
-        JSON.stringify({
-          success: false,
-          error: {
-            kind: 'user_input',
-            message: 'Not Found'
-          }
-        })
-      );
-    }
-
     readFile(
       join(__dirname, '..', 'client', 'dist', 'index.html'),
       'utf8',
