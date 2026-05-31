@@ -21,10 +21,15 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
       throw new InternalServerErrorException('An internal error has occurred.');
     }
 
-    const safeException =
-      exception instanceof HttpException
-        ? new InternalServerErrorException('An internal error has occurred.')
-        : new InternalServerErrorException('An internal error has occurred.');
+    // Preserve normal HTTP exception responses so auth failures remain
+    // Unauthorized/Forbidden/BadRequest instead of being converted to 500.
+    if (exception instanceof HttpException) {
+      return super.catch(exception, host);
+    }
+
+    const safeException = new InternalServerErrorException(
+      'An internal error has occurred.'
+    );
 
     const applicationRef =
       this.applicationRef ||
