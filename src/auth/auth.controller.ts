@@ -664,7 +664,7 @@ export class AuthController {
       }
 
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred'
       });
     }
   }
@@ -676,7 +676,7 @@ export class AuthController {
       user = await this.usersService.findByEmail(req.user);
     } catch (err) {
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred'
       });
     }
 
