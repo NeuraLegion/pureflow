@@ -2,13 +2,16 @@ import {
   ArgumentsHost,
   Catch,
   HttpException,
-  InternalServerErrorException
+  InternalServerErrorException,
+  Logger
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { GqlContextType } from '@nestjs/graphql';
 
 @Catch()
 export class GlobalExceptionFilter extends BaseExceptionFilter {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
   public catch(exception: unknown, host: ArgumentsHost) {
     const gql = host.getType<GqlContextType>() === 'graphql';
 
@@ -19,6 +22,8 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
 
       return super.catch(exception, host);
     }
+
+    this.logger.error('Unhandled exception', exception as any);
 
     const unprocessableException = new InternalServerErrorException(
       'An internal error has occurred.'
