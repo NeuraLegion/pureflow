@@ -6,7 +6,7 @@ FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache python3 make g++ pkgconf libxml2-dev libxslt-dev openssl-dev
+RUN apk add --no-cache python3 make g++ pkgconf libxml2-dev libxslt-dev openssl-dev libxml2 libxslt
 
 # Copy and build NestJS server project
 COPY --chown=node:node package*.json ./
