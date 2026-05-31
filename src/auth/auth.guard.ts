@@ -50,7 +50,9 @@ export class AuthGuard implements CanActivate {
       request.user = payload;
       return true;
     } catch (error) {
-      this.logger.debug(`Authentication failed: ${error instanceof Error ? error.message : 'unknown error'}`);
+      this.logger.debug(
+        `Authentication failed: ${error instanceof Error ? error.message : 'unknown error'}`
+      );
       throw new UnauthorizedException({ error: 'Unauthorized' });
     }
   }
