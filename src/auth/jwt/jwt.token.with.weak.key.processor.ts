@@ -9,7 +9,12 @@ export class JwtTokenWithWeakKeyProcessor extends JwtTokenProcessor {
 
   async validateToken(token: string): Promise<unknown> {
     this.log.debug('Call validateToken');
-    return decode(token, this.key, false);
+
+    try {
+      return decode(token, this.key, false);
+    } catch {
+      throw new Error('Failed to validate JWT');
+    }
   }
 
   async createToken(payload: unknown): Promise<string> {
