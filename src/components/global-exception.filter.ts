@@ -15,23 +15,16 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
   public catch(exception: unknown, host: ArgumentsHost) {
     const gql = host.getType<GqlContextType>() === 'graphql';
 
-    if (exception instanceof HttpException) {
-      if (gql) {
-        throw new InternalServerErrorException('An internal error has occurred.');
-      }
-
-      return super.catch(exception, host);
-    }
-
     this.logger.error('Unhandled exception', exception as any);
 
-    const unprocessableException = new InternalServerErrorException(
-      'An internal error has occurred.'
-    );
-
     if (gql) {
-      throw unprocessableException;
+      throw new InternalServerErrorException('An internal error has occurred.');
     }
+
+    const safeException =
+      exception instanceof HttpException
+        ? new InternalServerErrorException('An internal error has occurred.')
+        : new InternalServerErrorException('An internal error has occurred.');
 
     const applicationRef =
       this.applicationRef ||
@@ -39,8 +32,8 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
 
     return applicationRef.reply(
       host.getArgByIndex(1),
-      unprocessableException.getResponse(),
-      unprocessableException.getStatus()
+      safeException.getResponse(),
+      safeException.getStatus()
     );
   }
 }
