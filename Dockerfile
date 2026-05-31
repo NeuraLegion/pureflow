@@ -47,7 +47,7 @@ FROM node:18-alpine AS production
 
 WORKDIR /usr/src/app
 
-RUN apk add --no-cache wget
+RUN apk add --no-cache wget libxml2 libxslt
 
 COPY --chown=node:node .env ./
 COPY --chown=node:node config ./config

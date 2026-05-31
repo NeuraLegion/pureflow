@@ -5,7 +5,7 @@ services:
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d bc -U bc']
       timeout: 45s
     environment:
       POSTGRES_DB: bc

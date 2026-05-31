@@ -3,25 +3,25 @@ PostgreSQL Database directory appears to contain a database; Skipping initializa
 
 === pureflow-keycloak-1 ===
 Updating the configuration and installing your custom providers, if any. Please wait.
-2026-05-31 06:40:49,462 INFO  [io.qua.hib.orm.dep.HibernateOrmProcessor] (build-7) A legacy persistence.xml file is present in the classpath. This file will be used to configure JPA/Hibernate ORM persistence units, and any configuration of the Hibernate ORM extension will be ignored. To ignore persistence.xml files instead, set the configuration property 'quarkus.hibernate-orm.persistence-xml.ignore' to 'true'.
-2026-05-31 06:40:51,202 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 3035ms
+2026-05-31 06:52:14,471 INFO  [io.qua.hib.orm.dep.HibernateOrmProcessor] (build-15) A legacy persistence.xml file is present in the classpath. This file will be used to configure JPA/Hibernate ORM persistence units, and any configuration of the Hibernate ORM extension will be ignored. To ignore persistence.xml files instead, set the configuration property 'quarkus.hibernate-orm.persistence-xml.ignore' to 'true'.
+2026-05-31 06:52:16,266 INFO  [io.qua.dep.QuarkusAugmentor] (main) Quarkus augmentation completed in 3778ms
 Running the server in development mode. DO NOT use this configuration in production.
-2026-05-31 06:40:51,754 ERROR [org.keycloak.quarkus.runtime.configuration.mappers.PropertyMappers] (main) Hostname v1 options [hostname-strict-https] are still in use, please review your configuration
-2026-05-31 06:40:53,202 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (ForkJoinPool.commonPool-worker-1) Starting Infinispan embedded cache manager
-2026-05-31 06:40:53,264 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) Virtual threads support enabled
-2026-05-31 06:40:53,362 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
-2026-05-31 06:40:53,532 INFO  [org.infinispan.transaction.lookup.JBossStandaloneJTAManagerLookup] (ForkJoinPool.commonPool-worker-1) ISPN000107: Retrieving transaction manager Transaction: unknown
-2026-05-31 06:40:53,765 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_815825, Site name: null
-2026-05-31 06:40:53,769 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2026-05-31 06:40:54,265 INFO  [org.keycloak.exportimport.singlefile.SingleFileImportProvider] (main) Full importing from file /opt/keycloak/bin/../data/import/realm-export.json
-2026-05-31 06:40:54,414 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'pureflow' already exists. Import skipped
-2026-05-31 06:40:54,415 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
-2026-05-31 06:40:54,418 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: IGNORE_EXISTING
-2026-05-31 06:40:54,418 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
-2026-05-31 06:40:54,430 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
-2026-05-31 06:40:54,571 INFO  [io.quarkus] (main) Keycloak 26.1.2 on JVM (powered by Quarkus 3.15.3) started in 3.235s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
-2026-05-31 06:40:54,571 INFO  [io.quarkus] (main) Profile dev activated. 
-2026-05-31 06:40:54,571 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2026-05-31 06:52:16,848 ERROR [org.keycloak.quarkus.runtime.configuration.mappers.PropertyMappers] (main) Hostname v1 options [hostname-strict-https] are still in use, please review your configuration
+2026-05-31 06:52:18,298 INFO  [org.keycloak.quarkus.runtime.storage.infinispan.CacheManagerFactory] (ForkJoinPool.commonPool-worker-1) Starting Infinispan embedded cache manager
+2026-05-31 06:52:18,370 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) Virtual threads support enabled
+2026-05-31 06:52:18,470 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller'
+2026-05-31 06:52:18,661 INFO  [org.infinispan.transaction.lookup.JBossStandaloneJTAManagerLookup] (ForkJoinPool.commonPool-worker-1) ISPN000107: Retrieving transaction manager Transaction: unknown
+2026-05-31 06:52:18,936 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: node_478227, Site name: null
+2026-05-31 06:52:18,942 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2026-05-31 06:52:19,459 INFO  [org.keycloak.exportimport.singlefile.SingleFileImportProvider] (main) Full importing from file /opt/keycloak/bin/../data/import/realm-export.json
+2026-05-31 06:52:19,604 INFO  [org.keycloak.exportimport.util.ImportUtils] (main) Realm 'pureflow' already exists. Import skipped
+2026-05-31 06:52:19,604 INFO  [org.keycloak.exportimport.dir.DirImportProvider] (main) Importing from directory /opt/keycloak/bin/../data/import
+2026-05-31 06:52:19,606 INFO  [org.keycloak.services] (main) KC-SERVICES0030: Full model import requested. Strategy: IGNORE_EXISTING
+2026-05-31 06:52:19,606 INFO  [org.keycloak.services] (main) KC-SERVICES0032: Import finished successfully
+2026-05-31 06:52:19,613 WARN  [io.agroal.pool] (main) Datasource '<default>': JDBC resources leaked: 3 ResultSet(s) and 0 Statement(s)
+2026-05-31 06:52:19,734 INFO  [io.quarkus] (main) Keycloak 26.1.2 on JVM (powered by Quarkus 3.15.3) started in 3.352s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
+2026-05-31 06:52:19,734 INFO  [io.quarkus] (main) Profile dev activated. 
+2026-05-31 06:52:19,734 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, narayana-jta, opentelemetry, reactive-routes, rest, rest-jackson, smallrye-context-propagation, smallrye-health, vertx]
 
 === pureflow-keycloak-db-1 ===
 PostgreSQL Database directory appears to contain a database; Skipping initialization
@@ -36,11 +36,11 @@ Starting MailCatcher v0.10.0
 > node dist/main.js
 
 === pureflow-ollama-1 ===
-[GIN] 2026/05/31 - 06:40:52 | 200 |      39.636µs |       127.0.0.1 | HEAD     "/"
-[GIN] 2026/05/31 - 06:40:52 | 200 |     366.125µs |       127.0.0.1 | GET      "/api/tags"
-[GIN] 2026/05/31 - 06:41:22 | 200 |      15.175µs |       127.0.0.1 | HEAD     "/"
-[GIN] 2026/05/31 - 06:41:22 | 200 |     303.858µs |       127.0.0.1 | GET      "/api/tags"
-[GIN] 2026/05/31 - 06:41:52 | 200 |      37.595µs |       127.0.0.1 | HEAD     "/"
-[GIN] 2026/05/31 - 06:41:52 | 200 |     551.071µs |       127.0.0.1 | GET      "/api/tags"
-[GIN] 2026/05/31 - 06:42:22 | 200 |       19.31µs |       127.0.0.1 | HEAD     "/"
-[GIN] 2026/05/31 - 06:42:22 | 200 |     209.379µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/31 - 06:52:16 | 200 |      20.354µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/31 - 06:52:16 | 200 |     213.612µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/31 - 06:52:46 | 200 |      25.106µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/31 - 06:52:46 | 200 |      416.57µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/31 - 06:53:16 | 200 |      28.313µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/31 - 06:53:16 | 200 |     447.418µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/05/31 - 06:53:46 | 200 |      28.811µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/05/31 - 06:53:46 | 200 |      239.13µs |       127.0.0.1 | GET      "/api/tags"
