@@ -1,11 +1,11 @@
 services:
   db:
     image: 'postgres:17-alpine'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 10s
       retries: 10
-      test: ['CMD-SHELL', 'pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -d bc -U bc']
       timeout: 45s
     environment:
       POSTGRES_DB: bc
@@ -15,11 +15,15 @@ services:
       - '5432:5432'
     volumes:
       - './pg.sql:/docker-entrypoint-initdb.d/pg.sql'
-      - '.data/nodejs:/var/lib/postgresql/data/'
+      - '.data/nodejs:/var/lib/postgresql/data'
 
   nodejs:
-    image: 'dull/pureflow'
-    restart: always
+    # image: dull/pureflow  # replaced — must build from source
+    build:
+      context: .
+    restart: on-failure
+    ports:
+      - '3000:3000'
     healthcheck:
       interval: 5s
       retries: 10
@@ -28,10 +32,31 @@ services:
       timeout: 30s
     environment:
       NODE_ENV: production
+      DATABASE_HOST: db
+      DATABASE_SCHEMA: bc
+      DATABASE_USER: bc
+      DATABASE_PASSWORD: bc
+      DATABASE_PORT: 5432
+      KEYCLOAK_SERVER_URI: http://keycloak:8080
+      KEYCLOAK_REALM: pureflow
+      KEYCLOAK_PUBLIC_CLIENT_ID: pureflow-client
+      KEYCLOAK_PUBLIC_CLIENT_SECRET: 4bfb5df6-4647-46dd-bad1-c8b8ffd7caf4
+      KEYCLOAK_ADMIN_CLIENT_ID: admin-cli
+      KEYCLOAK_ADMIN_CLIENT_SECRET: 3abff4a7-6649-4bae-a105-9bd1fb52a2cd
+      JWT_PRIVATE_KEY_LOCATION: /usr/src/app/config/keys/jwtRS256.key
+      JWT_PUBLIC_KEY_LOCATION: /usr/src/app/config/keys/jwtRS256.key.pub.pem
+      JWT_SECRET_KEY: dev-secret
+      JWT_CONFIGS_URI: file:///usr/src/app/config/keys/jku.json
+      JWK_PRIVATE_KEY_LOCATION: /usr/src/app/config/keys/jwk.key.pem
+      JWK_PUBLIC_KEY_LOCATION: /usr/src/app/config/keys/jwk.pub.key.pem
+      JWK_PUBLIC_JSON: /usr/src/app/config/keys/jwk.pub.json
+      JKU_URL: http://nodejs:3000/.well-known/jwks.json
+      X5U_URL: http://nodejs:3000/.well-known/x5u.pem
       CHAT_API_URL: http://ollama:11434/v1/chat/completions
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''
       CHAT_API_MAX_TOKENS: 200
+      URL: http://localhost:3000
     deploy:
       restart_policy:
         condition: on-failure
@@ -43,27 +68,15 @@ services:
         max-file: '5'
         max-size: '10m'
     depends_on:
-      - db
-      - mailcatcher
-      - keycloak
-      - ollama
+      db:
+        condition: service_healthy
+      mailcatcher:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
 
-  watchtower:
-    image: 'containrrr/watchtower'
-    healthcheck:
-      test: ['CMD', '/watchtower', '--health-check']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-    restart: always
-    logging:
-      options:
-        max-file: '5'
-        max-size: '10m'
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    command: --interval 300 --debug
 
   keycloak-db:
     image: 'postgres:17-alpine'
@@ -78,7 +91,7 @@ services:
       timeout: 45s
     restart: on-failure
     volumes:
-      - '.data/keycloak:/var/lib/postgresql/data/'
+      - '.data/keycloak:/var/lib/postgresql/data'
 
   keycloak:
     image: 'quay.io/keycloak/keycloak:26.1.2'
@@ -117,7 +130,7 @@ services:
       retries: 10
       test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:1080']
       timeout: 45s
-    restart: always
+    restart: on-failure
     ports:
       - '1080:1080'
       - '1025:1025'
@@ -128,7 +141,7 @@ services:
 
   ollama:
     image: 'brightsec/brokencrystals-ollama:smollm135m'
-    restart: always
+    restart: on-failure
     healthcheck:
       interval: 30s
       retries: 5

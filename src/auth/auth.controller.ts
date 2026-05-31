@@ -99,7 +99,6 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(CsrfGuard)
   @ApiCreatedResponse({
     type: LoginResponse
   })
@@ -554,7 +553,7 @@ export class AuthController {
     const profile = await this.loginBasic(req);
 
     res.header(
-      'Authorization',
+      'authorization',
       await this.authService.createToken(
         { user: profile.email },
         JwtProcessorType.X5U
@@ -664,7 +663,7 @@ export class AuthController {
       }
 
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred'
       });
     }
   }
@@ -676,7 +675,7 @@ export class AuthController {
       user = await this.usersService.findByEmail(req.user);
     } catch (err) {
       throw new InternalServerErrorException({
-        error: err.message
+        error: 'An internal error has occurred'
       });
     }
 
@@ -695,7 +694,7 @@ export class AuthController {
     const token = await this.authService.createToken(
       {
         user: user.email,
-        exp: 3600 + Math.floor(Date.now() / 1000) // Auth token expires in 1 hour
+        exp: 3600 + Math.floor(Date.now() / 1000)
       },
       JwtProcessorType.RSA
     );

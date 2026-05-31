@@ -7,84 +7,53 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthService, JwtProcessorType } from './auth.service';
-import { JwTypeMetadataField } from './jwt/jwt.type.decorator';
-import { FastifyRequest } from 'fastify';
-import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
+import { IS_PUBLIC_KEY } from '../common/public.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private static readonly AUTH_HEADER = 'authorization';
-  private static readonly BEARER_PREFIX = 'bearer';
   private readonly logger = new Logger(AuthGuard.name);
 
   constructor(
-    private readonly authService: AuthService,
-    private readonly reflector: Reflector
+    private readonly reflector: Reflector,
+    private readonly authService: AuthService
   ) {}
 
-  async canActivate(context: ExecutionContext) {
-    try {
-      this.logger.debug('Called canActivate');
-      const request = this.getRequest(context);
-      const token = this.extractToken(request);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ]);
 
-      if (!token) {
-        return false;
-      }
-
-      return await this.verifyToken(token, context);
-    } catch (err) {
-      this.logger.debug(`Failed to validate token: ${err.message}`);
-      throw new UnauthorizedException({
-        error: 'Unauthorized',
-        line: __filename
-      });
-    }
-  }
-
-  private extractToken(request: FastifyRequest): string | undefined {
-    let token = request.headers[AuthGuard.AUTH_HEADER];
-
-    if (!token?.length) {
-      token = request.cookies[AuthGuard.AUTH_HEADER];
+    if (isPublic) {
+      return true;
     }
 
-    if (this.checkIsBearer(token)) {
-      token = token.substring(AuthGuard.BEARER_PREFIX.length).trim();
+    const request = context.switchToHttp().getRequest();
+    const authHeader = request.headers?.authorization || request.headers?.Authorization;
+
+    if (!authHeader || typeof authHeader !== 'string') {
+      throw new UnauthorizedException({ error: 'Unauthorized' });
     }
 
-    return token?.length ? token : undefined;
-  }
+    const match = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (!match) {
+      throw new UnauthorizedException({ error: 'Unauthorized' });
+    }
 
-  private getRequest(context: ExecutionContext): FastifyRequest {
-    return context.getType<GqlContextType>() === 'graphql'
-      ? GqlExecutionContext.create(context).getContext().req
-      : context.switchToHttp().getRequest();
-  }
-
-  private async verifyToken(
-    token: string,
-    context: ExecutionContext
-  ): Promise<boolean> {
-    const processorType = this.reflector.get<JwtProcessorType>(
-      JwTypeMetadataField,
-      context.getHandler()
-    );
+    const token = match[1].trim();
+    if (!token) {
+      throw new UnauthorizedException({ error: 'Unauthorized' });
+    }
 
     try {
-      return !!(await this.authService.validateToken(token, processorType));
-    } catch {
-      return !!(await this.authService.validateToken(
-        token,
-        JwtProcessorType.BEARER
-      ));
+      const payload = await this.authService.validateToken(token, JwtProcessorType.BEARER);
+      request.user = payload;
+      return true;
+    } catch (error) {
+      this.logger.debug(
+        `Authentication failed: ${error instanceof Error ? error.message : 'unknown error'}`
+      );
+      throw new UnauthorizedException({ error: 'Unauthorized' });
     }
-  }
-
-  private checkIsBearer(bearer: string): boolean {
-    return (
-      !!bearer &&
-      bearer.toLowerCase().startsWith(AuthGuard.BEARER_PREFIX.toLowerCase())
-    );
   }
 }
