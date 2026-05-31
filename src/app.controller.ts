@@ -31,7 +31,6 @@ import {
   ApiQuery,
   ApiTags
 } from '@nestjs/swagger';
-import * as dotT from 'dot';
 import { parseXml } from 'libxmljs';
 import { AppConfig } from './app.config.api';
 import {
@@ -69,12 +68,33 @@ export class AppController {
     description: 'Rendered result'
   })
   async renderTemplate(@Body() raw): Promise<string> {
-    if (typeof raw === 'string' || Buffer.isBuffer(raw)) {
-      const text = raw.toString().trim();
-      const res = dotT.compile(text)();
-      this.logger.debug(`Rendered template: ${res}`);
-      return res;
+    const allowedTemplates: Record<string, (name: string) => string> = {
+      welcome: (name: string) => `Hello, ${name}`,
+      goodbye: (name: string) => `Goodbye, ${name}`
+    };
+
+    if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+      throw new HttpException('Invalid template request', HttpStatus.BAD_REQUEST);
     }
+
+    const { templateId, name } = raw as { templateId?: unknown; name?: unknown };
+    if (typeof templateId !== 'string' || typeof name !== 'string') {
+      throw new HttpException('Invalid template request', HttpStatus.BAD_REQUEST);
+    }
+
+    const template = allowedTemplates[templateId];
+    if (!template) {
+      throw new HttpException('Invalid template request', HttpStatus.BAD_REQUEST);
+    }
+
+    const safeName = name.trim();
+    if (!safeName) {
+      throw new HttpException('Invalid template request', HttpStatus.BAD_REQUEST);
+    }
+
+    const res = template(safeName);
+    this.logger.debug(`Rendered template: ${res}`);
+    return res;
   }
 
   @Get('goto')
