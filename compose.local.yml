@@ -68,10 +68,31 @@ services:
     healthcheck:
       interval: 5s
       retries: 10
-      test: ['CMD', 'wget', '--spider', '-q', 'http://nodejs:3000/api/config']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3000/api/config']
       timeout: 30s
     environment:
+      NODE_ENV: development
       URL: http://localhost:3000
+      DATABASE_HOST: db
+      DATABASE_SCHEMA: bc
+      DATABASE_USER: bc
+      DATABASE_PASSWORD: bc
+      DATABASE_PORT: 5432
+      KEYCLOAK_SERVER_URI: http://keycloak:8080
+      KEYCLOAK_REALM: pureflow
+      KEYCLOAK_PUBLIC_CLIENT_ID: pureflow
+      KEYCLOAK_PUBLIC_CLIENT_SECRET: ''
+      KEYCLOAK_ADMIN_CLIENT_ID: admin-cli
+      KEYCLOAK_ADMIN_CLIENT_SECRET: ''
+      JWT_PRIVATE_KEY_LOCATION: /usr/src/app/config/keys/jwt-private.pem
+      JWT_PUBLIC_KEY_LOCATION: /usr/src/app/config/keys/jwt-public.pem
+      JWT_SECRET_KEY: dev-secret
+      JWT_CONFIGS_URI: file:///usr/src/app/config/products/jwt-configs.json
+      JWK_PRIVATE_KEY_LOCATION: /usr/src/app/config/keys/jwk-private.pem
+      JWK_PUBLIC_KEY_LOCATION: /usr/src/app/config/keys/jwk-public.pem
+      JWK_PUBLIC_JSON: '{}'
+      JKU_URL: http://nodejs:3000/.well-known/jwks.json
+      X5U_URL: http://nodejs:3000/.well-known/x5u.pem
       CHAT_API_URL: http://ollama:11434/v1/chat/completions
       CHAT_API_MODEL: smollm:135m
       CHAT_API_TOKEN: ''

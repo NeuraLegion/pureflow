@@ -5,9 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import fastifyCookie from '@fastify/cookie';
 import session from '@fastify/session';
 import { GlobalExceptionFilter } from './components/global-exception.filter';
-import * as os from 'os';
-import { readFileSync, readFile, readdirSync } from 'fs';
-import cluster from 'cluster';
+import { existsSync, readFileSync, readFile, readdirSync } from 'fs';
 import {
   FastifyAdapter,
   NestFastifyApplication
@@ -75,6 +73,13 @@ async function bootstrap() {
   http.globalAgent.maxSockets = Infinity;
   https.globalAgent.maxSockets = Infinity;
 
+  const certPath = '/etc/letsencrypt/live/pureflow.com/fullchain.pem';
+  const keyPath = '/etc/letsencrypt/live/pureflow.com/privkey.pem';
+  const useHttps =
+    process.env.NODE_ENV === 'production' &&
+    existsSync(certPath) &&
+    existsSync(keyPath);
+
   const server = fastify({
     logger:
       process.env.FASTIFY_LOGGER === 'true'
@@ -82,15 +87,16 @@ async function bootstrap() {
         : false,
     trustProxy: true,
     onProtoPoisoning: 'ignore',
-    https:
-      process.env.NODE_ENV === 'production'
-        ? {
-            cert: readFileSync(
-              '/etc/letsencrypt/live/pureflow.com/fullchain.pem'
-            ),
-            key: readFileSync('/etc/letsencrypt/live/pureflow.com/privkey.pem')
-          }
-        : null
+    connectionTimeout: 0,
+    requestTimeout: 0,
+    keepAliveTimeout: 0,
+    bodyLimit: 104857600,
+    https: useHttps
+      ? {
+          cert: readFileSync(certPath),
+          key: readFileSync(keyPath)
+        }
+      : null
   });
 
   server.setDefaultRoute((req, res) => {
@@ -129,7 +135,7 @@ async function bootstrap() {
     decorateReply: false,
     redirect: false,
     wildcard: false,
-    serveDotFiles: true
+    serveDotFiles: false
   });
 
   for (const dir of readdirSync(join(__dirname, '..', 'client', 'vcs'))) {
@@ -143,7 +149,7 @@ async function bootstrap() {
         format: 'html',
         render: renderDirList
       },
-      serveDotFiles: true
+      serveDotFiles: false
     });
   }
 
@@ -157,7 +163,7 @@ async function bootstrap() {
       format: 'html',
       render: renderDirList
     },
-    serveDotFiles: true
+    serveDotFiles: false
   });
 
   const app: NestFastifyApplication = await NestFactory.create(
@@ -191,39 +197,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('Pure Flow')
-    .setDescription(
-      `
-  ![BC logo](/assets/img/logo_blue_small.png)
-
-  This is the _Pure Flow_ REST API.
-
-  _Pure Flow_ is a benchmark application that uses modern technologies and implements a set of common security vulnerabilities.
-
-  ## Available endpoints
-
-  * [App](#/App%20controller) - common operations
-
-  * [Auth](#/Auth%20controller) - operations with authentication methods
-
-  * [User](#/User%20controller) - operations with users(creation, searching)
-
-  * [Files](#/Files%20controller) - operations with files
-
-  * [Subscriptions](#/Subscriptions%20controller) - operations with subscriptions
-
-  * [Testimonials](#/Testimonials%20controller) - operations with testimonials
-
-  * [Products](#/Products%20controller) — operations with products
-
-  * [Partners](#/Partners%20controller) — operations with partners
-
-  * [Emails](#/Emails%20controller) — operations with emails
-  
-  * [Chat](#/Chat%20controller) — operations with chat
-
-
-  `
-    )
+    .setDescription('Pure Flow API')
     .setVersion('1.0')
     .addServer(process.env.URL)
     .build();
@@ -234,22 +208,7 @@ async function bootstrap() {
   await app.listen(3000, '0.0.0.0');
 }
 
-if (cluster.isPrimary && process.env.NODE_ENV === 'production') {
-  console.log(`Primary ${process.pid} is running`);
-
-  const numCPUs = os.cpus().length;
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(
-      `Worker ${worker.process.pid} died with code ${code} and signal ${signal}`
-    );
-    console.log('Starting a new worker');
-    cluster.fork();
-  });
-} else {
-  bootstrap();
-  console.log(`Worker ${process.pid} started`);
-}
+bootstrap().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -99,7 +99,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(CsrfGuard)
+  @UseGuards()
   @ApiCreatedResponse({
     type: LoginResponse
   })
