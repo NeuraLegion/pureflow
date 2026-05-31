@@ -131,17 +131,33 @@ export class AppController {
   @ApiCreatedResponse({
     description: 'XML passed successfully'
   })
-  @Header('content-type', 'text/xml')
+  @Header('content-type', 'application/json')
   async xml(@Body() xml: string): Promise<string> {
-    const xmlDoc = parseXml(decodeURIComponent(xml), {
-      noent: true,
-      dtdvalid: true,
-      recover: true
-    });
-    this.logger.debug(xmlDoc);
-    this.logger.debug(xmlDoc.getDtd());
+    if (typeof xml !== 'string' || xml.length === 0 || xml.length > 10000) {
+      throw new HttpException('Invalid XML metadata', HttpStatus.BAD_REQUEST);
+    }
 
-    return xmlDoc.toString(true);
+    let decodedXml: string;
+    try {
+      decodedXml = decodeURIComponent(xml);
+    } catch {
+      throw new HttpException('Invalid XML metadata', HttpStatus.BAD_REQUEST);
+    }
+
+    if (!/^<svg\b[^>]*>[\s\S]*<\/svg>$/.test(decodedXml.trim())) {
+      throw new HttpException('Invalid XML metadata', HttpStatus.BAD_REQUEST);
+    }
+
+    const sanitizedXml = decodedXml
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/\son\w+=("[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+
+    const xmlDoc = parseXml(sanitizedXml, {
+      recover: false
+    });
+    this.logger.debug(xmlDoc.name());
+
+    return JSON.stringify({ status: 'ok' });
   }
 
   @Options()
