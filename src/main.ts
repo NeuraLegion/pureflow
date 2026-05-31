@@ -135,7 +135,8 @@ async function bootstrap() {
     decorateReply: false,
     redirect: false,
     wildcard: false,
-    serveDotFiles: false
+    serveDotFiles: false,
+    allowedPath: (path) => !path.split('/').some((segment) => segment.startsWith('.'))
   });
 
   // Do not expose VCS metadata or working-copy artifacts over HTTP.
