@@ -14,7 +14,7 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
 
     if (exception instanceof HttpException) {
       if (gql) {
-        throw exception;
+        throw new InternalServerErrorException('An internal error has occurred.');
       }
 
       return super.catch(exception, host);
