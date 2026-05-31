@@ -1,0 +1,35 @@
+FROM node:20-bookworm-slim
+
+ENV NODE_ENV=development \
+    PORT=3001
+
+WORKDIR /app
+
+# Minimal runtime deps for the harness + target files
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates \
+      && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g npm@10
+
+# Install only the packages actually required by the harness and target files
+RUN npm install --no-save \
+      express \
+      reflect-metadata \
+      axios \
+      @nestjs/common \
+      @mikro-orm/core \
+      @mikro-orm/nestjs \
+      @xmldom/xmldom \
+      xpath \
+      argon2
+
+# Copy full source tree to preserve transitive requires/imports
+COPY . /app
+
+# Copy harness into the image
+COPY harness.js /app/harness.js
+
+EXPOSE 3001
+
+CMD ["node", "harness.js"]
